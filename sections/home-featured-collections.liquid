@@ -1,0 +1,162 @@
+{% comment %}
+  Homepage Featured Collections
+{% endcomment %}
+
+<section class="home-collections section">
+  <div class="container">
+    {% if section.settings.heading != blank %}
+      <div class="home-collections__header">
+        <h2>{{ section.settings.heading }}</h2>
+        {% if section.settings.subheading != blank %}
+          <p class="text-secondary">{{ section.settings.subheading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="home-collections__grid">
+      {% for block in section.blocks %}
+        {% assign collection = collections[block.settings.collection] %}
+        {% if collection %}
+          {% assign collection_image = collection.image | default: collection.products.first.featured_media %}
+          <a href="{{ collection.url }}" class="home-collections__card" {{ block.shopify_attributes }}>
+            <div class="home-collections__image-wrapper">
+              {% if collection_image %}
+                <img
+                  src="{{ collection_image | image_url: width: 800 }}"
+                  srcset="
+                    {{ collection_image | image_url: width: 400 }} 400w,
+                    {{ collection_image | image_url: width: 800 }} 800w,
+                    {{ collection_image | image_url: width: 1200 }} 1200w
+                  "
+                  sizes="(min-width: 1024px) 33vw, 100vw"
+                  alt="{{ collection.title | escape }}"
+                  loading="lazy"
+                  class="home-collections__image"
+                  width="800"
+                  height="600"
+                >
+              {% else %}
+                {{ 'collection-1' | placeholder_svg_tag: 'home-collections__placeholder' }}
+              {% endif %}
+            </div>
+            <div class="home-collections__content">
+              <h3 class="home-collections__title">{{ collection.title }}</h3>
+              {% if collection.description != blank %}
+                <p class="small text-secondary">
+                  {{ collection.description | strip_html | truncate: 100 }}
+                </p>
+              {% endif %}
+            </div>
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-collections__header {
+    max-width: 60ch;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .home-collections__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+
+  .home-collections__card {
+    border: 1px solid var(--color-border);
+    background-color: var(--color-white);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .home-collections__image-wrapper {
+    overflow: hidden;
+    background-color: var(--color-off-white);
+  }
+
+  .home-collections__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform var(--transition-slow);
+  }
+
+  .home-collections__card:hover .home-collections__image {
+    transform: scale(1.03);
+  }
+
+  .home-collections__content {
+    padding: var(--spacing-lg);
+  }
+
+  .home-collections__title {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  @media (min-width: 768px) {
+    .home-collections__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .home-collections__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Home Featured Collections",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Browse product families"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Curated collections for architects, contractors, and landscape designers."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home Featured Collections",
+      "blocks": [
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        },
+        {
+          "type": "collection"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

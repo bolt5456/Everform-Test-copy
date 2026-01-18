@@ -1,10 +1,12 @@
 {
   "sections": {
-    "main": {
-      "type": "main-product-technical",
-      "settings": {
-        "show_breadcrumbs": true
-      }
+    "product-gallery": {
+      "type": "product-gallery",
+      "settings": {}
+    },
+    "product-info": {
+      "type": "product-info",
+      "settings": {}
     },
     "size-chart": {
       "type": "size-chart-table",
@@ -29,14 +31,13 @@
       "type": "related-products",
       "settings": {
         "heading": "Related Products",
-        "products_to_show": 4,
-        "show_vendor": false,
-        "image_ratio": "4-5"
+        "products_to_show": 4
       }
     }
   },
   "order": [
-    "main",
+    "product-gallery",
+    "product-info",
     "size-chart",
     "technical-info",
     "related-products"
