@@ -1,0 +1,503 @@
+{% comment %}
+  Main Cart Section
+  Cart items, order notes, subtotal, embedded contact form
+  Critical feature: Shows Ex VAT + Inc VAT pricing
+{% endcomment %}
+
+<div class="main-cart">
+  <div class="container{% if section.settings.narrow_container %} container--narrow{% endif %}">
+    <h1 class="main-cart__heading">{{ 'cart.general.title' | t | default: 'Your Cart' }}</h1>
+
+    <form action="{{ routes.cart_url }}" method="post" class="cart-form" novalidate>
+      {% if cart.item_count > 0 %}
+        <div class="cart-items">
+          <table class="cart-table">
+            <thead>
+              <tr>
+                <th class="cart-table__header cart-table__header--image"></th>
+                <th class="cart-table__header cart-table__header--product">Product</th>
+                <th class="cart-table__header cart-table__header--price">Price</th>
+                <th class="cart-table__header cart-table__header--quantity">Quantity</th>
+                <th class="cart-table__header cart-table__header--total">Total</th>
+                <th class="cart-table__header cart-table__header--remove"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in cart.items %}
+                <tr class="cart-item" data-line-item data-line="{{ forloop.index }}">
+                  {%- comment -%}Product image{%- endcomment -%}
+                  <td class="cart-item__image">
+                    {% if item.image %}
+                      <a href="{{ item.url }}">
+                        <img
+                          src="{{ item.image | image_url: width: 150 }}"
+                          alt="{{ item.image.alt | escape }}"
+                          width="75"
+                          height="auto"
+                          loading="lazy"
+                        >
+                      </a>
+                    {% endif %}
+                  </td>
+
+                  {%- comment -%}Product details{%- endcomment -%}
+                  <td class="cart-item__details">
+                    <a href="{{ item.url }}" class="cart-item__title">
+                      {{ item.product.title }}
+                    </a>
+                    {% unless item.variant.title contains 'Default' %}
+                      <div class="cart-item__variant small text-muted">
+                        {{ item.variant.title }}
+                      </div>
+                    {% endunless %}
+                    {% if item.properties.size > 0 %}
+                      <div class="cart-item__properties small text-muted">
+                        {% for property in item.properties %}
+                          {% unless property.last == blank %}
+                            {{ property.first }}: {{ property.last }}<br>
+                          {% endunless %}
+                        {% endfor %}
+                      </div>
+                    {% endif %}
+                  </td>
+
+                  {%- comment -%}Price with VAT{%- endcomment -%}
+                  <td class="cart-item__price">
+                    {% if settings.enable_vat_pricing %}
+                      {% assign vat_rate = settings.vat_rate_percentage | default: 20 %}
+                      {% assign vat_multiplier = vat_rate | divided_by: 100.0 | plus: 1 %}
+                      {% assign price_with_vat = item.price | times: vat_multiplier | round %}
+
+                      <div class="cart-item__price-vat">
+                        <div class="cart-item__price-ex">
+                          {{ item.price | money }} <span class="small text-muted">{{ settings.vat_ex_label }}</span>
+                        </div>
+                        <div class="cart-item__price-inc small text-muted">
+                          {{ price_with_vat | money }} {{ settings.vat_inc_label }}
+                        </div>
+                      </div>
+                    {% else %}
+                      {{ item.price | money }}
+                    {% endif %}
+                  </td>
+
+                  {%- comment -%}Quantity{%- endcomment -%}
+                  <td class="cart-item__quantity">
+                    <div class="quantity-selector">
+                      <button type="button" class="quantity-selector__button" data-quantity-decrease data-line="{{ forloop.index }}" aria-label="Decrease quantity">
+                        <svg width="12" height="2" viewBox="0 0 12 2" fill="currentColor">
+                          <rect width="12" height="2"/>
+                        </svg>
+                      </button>
+                      <input
+                        type="number"
+                        name="updates[]"
+                        value="{{ item.quantity }}"
+                        min="0"
+                        class="quantity-selector__input"
+                        data-line="{{ forloop.index }}"
+                        aria-label="Quantity"
+                      >
+                      <button type="button" class="quantity-selector__button" data-quantity-increase data-line="{{ forloop.index }}" aria-label="Increase quantity">
+                        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                          <rect x="5" width="2" height="12"/>
+                          <rect y="5" width="12" height="2"/>
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+
+                  {%- comment -%}Line total{%- endcomment -%}
+                  <td class="cart-item__total">
+                    {% if settings.enable_vat_pricing %}
+                      {% assign line_total_with_vat = item.line_price | times: vat_multiplier | round %}
+
+                      <div class="cart-item__price-vat">
+                        <div class="cart-item__price-ex">
+                          <strong>{{ item.line_price | money }}</strong> <span class="small text-muted">{{ settings.vat_ex_label }}</span>
+                        </div>
+                        <div class="cart-item__price-inc small text-muted">
+                          {{ line_total_with_vat | money }} {{ settings.vat_inc_label }}
+                        </div>
+                      </div>
+                    {% else %}
+                      <strong>{{ item.line_price | money }}</strong>
+                    {% endif %}
+                  </td>
+
+                  {%- comment -%}Remove button{%- endcomment -%}
+                  <td class="cart-item__remove">
+                    <button type="button" class="cart-item__remove-button" data-remove-item data-line="{{ forloop.index }}" aria-label="Remove item">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="15" y1="5" x2="5" y2="15"></line>
+                        <line x1="5" y1="5" x2="15" y2="15"></line>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="cart-footer">
+          <div class="cart-footer__left">
+            {%- comment -%}Order notes{%- endcomment -%}
+            {% if settings.cart_show_order_notes %}
+              <div class="cart-notes">
+                <label for="CartNote" class="cart-notes__label">
+                  {{ 'cart.general.note' | t | default: 'Order Special Instructions' }}
+                </label>
+                <textarea
+                  id="CartNote"
+                  name="note"
+                  class="form-textarea"
+                  rows="4"
+                  placeholder="{{ 'cart.general.note_placeholder' | t | default: 'Add any special instructions...' }}"
+                >{{ cart.note }}</textarea>
+              </div>
+            {% endif %}
+
+            <div class="cart-actions">
+              <button type="submit" name="update" class="btn btn--secondary">
+                {{ 'cart.general.update' | t | default: 'Update Cart' }}
+              </button>
+              <a href="{{ routes.all_products_collection_url }}" class="btn btn--tertiary">
+                {{ 'cart.general.continue_shopping' | t | default: 'Continue Shopping' }}
+              </a>
+            </div>
+          </div>
+
+          <div class="cart-footer__right">
+            <div class="cart-summary">
+              <div class="cart-summary__row">
+                <span>{{ 'cart.general.subtotal' | t | default: 'Subtotal' }}</span>
+                {% if settings.enable_vat_pricing %}
+                  {% assign vat_rate = settings.vat_rate_percentage | default: 20 %}
+                  {% assign vat_multiplier = vat_rate | divided_by: 100.0 | plus: 1 %}
+                  {% assign cart_total_with_vat = cart.total_price | times: vat_multiplier | round %}
+
+                  <span>
+                    <strong>{{ cart.total_price | money }}</strong>
+                    <span class="small text-muted">{{ settings.vat_ex_label }}</span>
+                    <br>
+                    <span class="small text-muted">
+                      {{ cart_total_with_vat | money }} {{ settings.vat_inc_label }}
+                    </span>
+                  </span>
+                {% else %}
+                  <strong>{{ cart.total_price | money }}</strong>
+                {% endif %}
+              </div>
+
+              <p class="cart-summary__note small text-muted">
+                {{ 'cart.general.taxes_and_shipping' | t | default: 'Taxes and shipping calculated at checkout' }}
+              </p>
+
+              <button type="submit" name="checkout" class="btn btn--primary btn--full">
+                {{ 'cart.general.checkout' | t | default: 'Checkout' }}
+              </button>
+
+              {% if shop.customer_accounts_enabled %}
+                <p class="cart-summary__login text-center small text-muted">
+                  {{ 'cart.general.or' | t | default: 'or' }}
+                  <a href="{{ routes.account_login_url }}">{{ 'cart.general.login_to_checkout' | t | default: 'Log in to check out faster' }}</a>
+                </p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        {%- comment -%}Embedded contact form{%- endcomment -%}
+        {% if settings.cart_show_contact_form %}
+          <div class="cart-contact">
+            <h2 class="cart-contact__heading">Any Questions? Drop us a line</h2>
+            {% form 'contact', class: 'cart-contact__form contact-form' %}
+              {% if form.posted_successfully? %}
+                <div class="alert alert--success">
+                  Thanks for contacting us. We'll get back to you as soon as possible.
+                </div>
+              {% endif %}
+
+              {% if form.errors %}
+                <div class="alert alert--error">
+                  {{ form.errors | default_errors }}
+                </div>
+              {% endif %}
+
+              <div class="cart-contact__fields">
+                <div class="form-group">
+                  <input type="text" name="contact[name]" placeholder="Name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <input type="email" name="contact[email]" placeholder="Email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                  <input type="tel" name="contact[phone]" placeholder="Phone Number" class="form-input">
+                </div>
+                <div class="form-group">
+                  <textarea name="contact[body]" placeholder="Message" rows="4" class="form-textarea" required></textarea>
+                </div>
+                <div class="form-group">
+                  <button type="submit" class="btn btn--primary btn--full">Send</button>
+                </div>
+              </div>
+            {% endform %}
+          </div>
+        {% endif %}
+      {% else %}
+        {%- comment -%}Empty cart{%- endcomment -%}
+        <div class="cart-empty text-center">
+          <svg width="80" height="80" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2" class="cart-empty__icon">
+            <circle cx="30" cy="75" r="3"/>
+            <circle cx="60" cy="75" r="3"/>
+            <path d="M5 5h10l10 50h40l10-30H20"/>
+          </svg>
+          <h2 class="cart-empty__heading">{{ 'cart.general.empty' | t | default: 'Your cart is empty' }}</h2>
+          <p class="cart-empty__text">{{ 'cart.general.empty_text' | t | default: "Looks like you haven't added anything to your cart yet." }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="btn btn--primary">
+            {{ 'cart.general.continue_shopping' | t | default: 'Continue Shopping' }}
+          </a>
+        </div>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<script>
+  // Cart functionality
+  (function() {
+    const cartForm = document.querySelector('.cart-form');
+    if (!cartForm) return;
+
+    // Quantity selectors
+    const decreaseButtons = document.querySelectorAll('[data-quantity-decrease]');
+    const increaseButtons = document.querySelectorAll('[data-quantity-increase]');
+    const quantityInputs = document.querySelectorAll('.quantity-selector__input');
+
+    decreaseButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = btn.parentElement.querySelector('.quantity-selector__input');
+        const currentValue = parseInt(input.value) || 1;
+        if (currentValue > 1) {
+          input.value = currentValue - 1;
+          cartForm.submit();
+        } else if (currentValue === 1) {
+          // Remove item
+          input.value = 0;
+          cartForm.submit();
+        }
+      });
+    });
+
+    increaseButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const input = btn.parentElement.querySelector('.quantity-selector__input');
+        const currentValue = parseInt(input.value) || 0;
+        input.value = currentValue + 1;
+        cartForm.submit();
+      });
+    });
+
+    // Remove buttons
+    const removeButtons = document.querySelectorAll('[data-remove-item]');
+    removeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const line = btn.dataset.line;
+        const input = document.querySelector(`.quantity-selector__input[data-line="${line}"]`);
+        if (input) {
+          input.value = 0;
+          cartForm.submit();
+        }
+      });
+    });
+  })();
+</script>
+
+<style>
+  .main-cart {
+    padding: var(--spacing-2xl) 0;
+    min-height: 60vh;
+  }
+
+  .main-cart__heading {
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .cart-table {
+    width: 100%;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .cart-table__header {
+    text-align: left;
+    padding: var(--spacing-md);
+    border-bottom: 2px solid var(--color-border);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .cart-table__header--image {
+    width: 100px;
+  }
+
+  .cart-table__header--quantity {
+    width: 150px;
+  }
+
+  .cart-table__header--remove {
+    width: 50px;
+  }
+
+  .cart-item td {
+    padding: var(--spacing-lg) var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+  }
+
+  .cart-item__image img {
+    border-radius: var(--radius-md);
+  }
+
+  .cart-item__title {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-black);
+  }
+
+  .cart-item__variant,
+  .cart-item__properties {
+    margin-top: var(--spacing-xs);
+  }
+
+  .cart-item__price-vat {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .cart-item__remove-button {
+    padding: var(--spacing-xs);
+    color: var(--color-gray);
+    transition: color var(--transition-base);
+  }
+
+  .cart-item__remove-button:hover {
+    color: var(--color-error);
+  }
+
+  .cart-footer {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2xl);
+    margin-top: var(--spacing-2xl);
+  }
+
+  @media (min-width: 1024px) {
+    .cart-footer {
+      grid-template-columns: 1fr 400px;
+    }
+  }
+
+  .cart-notes {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .cart-notes__label {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+    font-weight: var(--font-weight-medium);
+  }
+
+  .cart-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+  }
+
+  .cart-summary {
+    padding: var(--spacing-lg);
+    background-color: var(--color-off-white);
+    border-radius: var(--radius-md);
+  }
+
+  .cart-summary__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .cart-summary__note {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .cart-summary__login {
+    margin-top: var(--spacing-md);
+  }
+
+  /* Cart contact form */
+  .cart-contact {
+    margin-top: var(--spacing-4xl);
+    padding: var(--spacing-2xl);
+    background-color: var(--color-off-white);
+    border-radius: var(--radius-md);
+  }
+
+  .cart-contact__heading {
+    margin-bottom: var(--spacing-lg);
+    font-size: var(--font-size-h3-mobile);
+  }
+
+  .cart-contact__fields {
+    display: grid;
+    gap: var(--spacing-md);
+    max-width: 600px;
+  }
+
+  /* Empty cart */
+  .cart-empty {
+    padding: var(--spacing-4xl) 0;
+  }
+
+  .cart-empty__icon {
+    margin: 0 auto var(--spacing-lg);
+    color: var(--color-light-gray);
+  }
+
+  .cart-empty__heading {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .cart-empty__text {
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-gray);
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 767px) {
+    .cart-table {
+      display: block;
+      overflow-x: auto;
+    }
+
+    .cart-table__header--price,
+    .cart-table__header--total {
+      min-width: 120px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Cart",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "narrow_container",
+      "label": "Use Narrow Container",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

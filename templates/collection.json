@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-collection",
+      "settings": {
+        "show_breadcrumbs": true,
+        "enable_filtering": true,
+        "enable_sorting": true,
+        "products_per_page": 24,
+        "show_vendor": false,
+        "image_ratio": "4-5"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

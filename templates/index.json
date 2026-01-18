@@ -1,0 +1,92 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-slideshow",
+      "blocks": {
+        "slide-1": {
+          "type": "slide",
+          "settings": {
+            "overlay_opacity": 30,
+            "content_alignment": "left",
+            "subtitle": "Premium Metal Fabrications",
+            "heading": "Architectural Metalwork Solutions",
+            "text": "UK manufacturer of Corten steel planters, aluminium copings, and bespoke metalwork. BS EN 1090 certified.",
+            "button_label": "Shop Products",
+            "button_link": "/collections/all",
+            "button_label_2": "Request Quote",
+            "button_link_2": "/pages/quotation-form"
+          }
+        },
+        "slide-2": {
+          "type": "slide",
+          "settings": {
+            "overlay_opacity": 30,
+            "content_alignment": "center",
+            "subtitle": "Bespoke Fabrications",
+            "heading": "Custom Metalwork Solutions",
+            "text": "From design to installation. 5-10 working day turnaround. Free UK mainland delivery.",
+            "button_label": "View Services",
+            "button_link": "/pages/services"
+          }
+        }
+      },
+      "block_order": [
+        "slide-1",
+        "slide-2"
+      ],
+      "settings": {
+        "autoplay": true,
+        "autoplay_speed": 5,
+        "show_arrows": true,
+        "show_dots": true
+      }
+    },
+    "featured-collection-1": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Corten Steel Planters",
+        "description": "Premium Corten steel planters for commercial and residential landscaping",
+        "products_to_show": 4,
+        "show_vendor": false,
+        "image_ratio": "4-5",
+        "show_view_all": true,
+        "button_label": "View All Planters"
+      }
+    },
+    "featured-collection-2": {
+      "type": "featured-collection",
+      "settings": {
+        "heading": "Aluminium Copings & Fascias",
+        "description": "Precision-engineered architectural metal components",
+        "products_to_show": 4,
+        "show_vendor": false,
+        "image_ratio": "4-5",
+        "show_view_all": true,
+        "button_label": "View All Products"
+      }
+    },
+    "contact-form": {
+      "type": "contact-form",
+      "settings": {
+        "heading": "Any Questions? Drop Us a Line",
+        "text": "<p>Have a question or need a custom quote? Fill out the form below and we'll get back to you within 48 hours.</p>",
+        "narrow_container": true,
+        "background_color": "white",
+        "name_label": "Name",
+        "email_label": "Email",
+        "show_phone": true,
+        "phone_label": "Phone Number (optional)",
+        "message_label": "Message",
+        "button_label": "Send Message",
+        "show_required_indicator": true,
+        "success_message": "Thanks for contacting us. We'll get back to you as soon as possible."
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "featured-collection-1",
+    "featured-collection-2",
+    "contact-form"
+  ]
+}

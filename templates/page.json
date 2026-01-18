@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {
+        "show_breadcrumbs": true,
+        "narrow_container": false
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
