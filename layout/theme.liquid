@@ -126,6 +126,7 @@
   </ul>
 
   <script>
+    window.THEME = window.THEME || { settings: {} };
     window.shopUrl = '{{ shop.secure_url }}';
     window.routes = {
       cart_add_url: '{{ routes.cart_add_url }}',
@@ -147,9 +148,9 @@
     };
 
     {%- if settings.enable_vat_pricing -%}
-      THEME.settings.vatRate = {{ settings.vat_rate_percentage | default: 20 }};
-      THEME.settings.vatExLabel = {{ settings.vat_ex_label | default: 'Ex VAT' | json }};
-      THEME.settings.vatIncLabel = {{ settings.vat_inc_label | default: 'Inc VAT' | json }};
+      window.THEME.settings.vatRate = {{ settings.vat_rate_percentage | default: 20 }};
+      window.THEME.settings.vatExLabel = {{ settings.vat_ex_label | default: 'Ex VAT' | json }};
+      window.THEME.settings.vatIncLabel = {{ settings.vat_inc_label | default: 'Inc VAT' | json }};
     {%- endif -%}
   </script>
 </body>

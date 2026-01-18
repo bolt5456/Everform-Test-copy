@@ -1,0 +1,40 @@
+{
+  "current": {
+    "sections": {},
+    "settings": {
+      "enable_vat_pricing": true,
+      "vat_rate_percentage": 20,
+      "vat_ex_label": "Ex VAT",
+      "vat_inc_label": "Inc VAT",
+      "color_primary": "#183E3F",
+      "color_primary_dark": "#0F2627",
+      "color_primary_light": "#2A5F61",
+      "color_text": "#1A1A1A",
+      "color_text_secondary": "#333333",
+      "color_text_muted": "#666666",
+      "color_border": "#CCCCCC",
+      "color_background": "#FFFFFF",
+      "color_background_alt": "#F5F5F5",
+      "font_heading": "archivo_n7",
+      "font_body": "questrial_n4",
+      "font_size_base": 16,
+      "container_max_width": 1440,
+      "section_padding_desktop": 80,
+      "section_padding_mobile": 48,
+      "contact_email": "enquiries@everform.co.uk",
+      "contact_phone": "02380 170146",
+      "contact_hours": "Mon-Fri, 08:00-17:30",
+      "contact_address": "75 Bournemouth Road, Chandlers Ford, SO53 3AP",
+      "social_instagram": "@everformltd",
+      "social_youtube": "@everformlimited",
+      "cart_show_contact_form": true,
+      "cart_show_order_notes": true,
+      "product_show_vendor": false,
+      "product_show_sku": false,
+      "product_enable_zoom": true,
+      "quotation_page_url": "/pages/quotation-form",
+      "social_share_image": "",
+      "social_twitter": ""
+    }
+  }
+}
