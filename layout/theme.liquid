@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="{{ settings.color_primary }}">
+
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- if settings.favicon != blank -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+  {%- endif -%}
+
+  {%- comment -%}Preconnect to required domains{%- endcomment -%}
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+
+  {%- comment -%}Page title{%- endcomment -%}
+  <title>
+    {{ page_title }}
+    {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+    {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+    {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  </title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  {%- comment -%}Social meta tags{%- endcomment -%}
+  {% render 'meta-tags' %}
+
+  {%- comment -%}CSS{%- endcomment -%}
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+  {{ 'typography.css' | asset_url | stylesheet_tag }}
+  {{ 'layout.css' | asset_url | stylesheet_tag }}
+  {{ 'components.css' | asset_url | stylesheet_tag }}
+
+  {%- comment -%}Fonts{%- endcomment -%}
+  <link rel="preload" as="style" href="{{ settings.font_heading | font_url }}" type="text/css" crossorigin>
+  <link rel="preload" as="style" href="{{ settings.font_body | font_url }}" type="text/css" crossorigin>
+
+  {{ settings.font_heading | font_face: font_display: 'swap' }}
+  {{ settings.font_body | font_face: font_display: 'swap' }}
+
+  {%- comment -%}JavaScript{%- endcomment -%}
+  <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+
+  {%- comment -%}Shopify required content{%- endcomment -%}
+  {{ content_for_header }}
+
+  {%- comment -%}CSS custom properties from theme settings{%- endcomment -%}
+  <style>
+    :root {
+      --font-heading: {{ settings.font_heading.family }}, sans-serif;
+      --font-body: {{ settings.font_body.family }}, sans-serif;
+      --color-primary: {{ settings.color_primary }};
+      --color-primary-dark: {{ settings.color_primary_dark }};
+      --color-primary-light: {{ settings.color_primary_light }};
+      --color-text: {{ settings.color_text }};
+      --color-text-secondary: {{ settings.color_text_secondary }};
+      --color-text-muted: {{ settings.color_text_muted }};
+      --color-border: {{ settings.color_border }};
+      --color-background: {{ settings.color_background }};
+      --color-background-alt: {{ settings.color_background_alt }};
+      --container-max-width: {{ settings.container_max_width }}px;
+      --section-padding-desktop: {{ settings.section_padding_desktop }}px;
+      --section-padding-mobile: {{ settings.section_padding_mobile }}px;
+    }
+  </style>
+
+  {%- comment -%}Organization Schema Markup{%- endcomment -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": {{ shop.name | json }},
+    "url": {{ shop.url | json }},
+    "logo": {{ shop.brand.logo | image_url: width: 500 | prepend: 'https:' | json }},
+    "sameAs": [
+      "https://www.instagram.com/{{ settings.social_instagram | remove: '@' }}",
+      "https://www.youtube.com/{{ settings.social_youtube | remove: '@' }}"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": {{ settings.contact_phone | json }},
+      "contactType": "Customer Service",
+      "email": {{ settings.contact_email | json }},
+      "areaServed": "GB",
+      "availableLanguage": "English"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "75 Bournemouth Road",
+      "addressLocality": "Chandlers Ford",
+      "postalCode": "SO53 3AP",
+      "addressCountry": "GB"
+    }
+  }
+  </script>
+</head>
+
+<body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}">
+  <a class="skip-to-content" href="#MainContent">
+    Skip to content
+  </a>
+
+  {%- sections 'header-group' -%}
+
+  <main id="MainContent" class="main-content" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {%- sections 'footer-group' -%}
+
+  {%- comment -%}Cart drawer/notification (if needed){%- endcomment -%}
+  <div id="cart-notification" class="cart-notification" aria-hidden="true">
+    {%- comment -%}Cart notification content{%- endcomment -%}
+  </div>
+
+  {%- comment -%}Load Shopify features{%- endcomment -%}
+  <ul hidden>
+    <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>
+    <li id="a11y-new-window-message">{{ 'accessibility.link_messages.new_window' | t }}</li>
+  </ul>
+
+  <script>
+    window.shopUrl = '{{ shop.secure_url }}';
+    window.routes = {
+      cart_add_url: '{{ routes.cart_add_url }}',
+      cart_change_url: '{{ routes.cart_change_url }}',
+      cart_update_url: '{{ routes.cart_update_url }}',
+      cart_url: '{{ routes.cart_url }}',
+      predictive_search_url: '{{ routes.predictive_search_url }}'
+    };
+
+    window.cartStrings = {
+      error: `{{ 'sections.cart.cart_error' | t }}`,
+      quantityError: `{{ 'sections.cart.quantity_error' | t }}`
+    };
+
+    window.variantStrings = {
+      addToCart: `{{ 'products.product.add_to_cart' | t }}`,
+      soldOut: `{{ 'products.product.sold_out' | t }}`,
+      unavailable: `{{ 'products.product.unavailable' | t }}`
+    };
+
+    {%- if settings.enable_vat_pricing -%}
+      THEME.settings.vatRate = {{ settings.vat_rate_percentage | default: 20 }};
+      THEME.settings.vatExLabel = {{ settings.vat_ex_label | default: 'Ex VAT' | json }};
+      THEME.settings.vatIncLabel = {{ settings.vat_inc_label | default: 'Inc VAT' | json }};
+    {%- endif -%}
+  </script>
+</body>
+</html>

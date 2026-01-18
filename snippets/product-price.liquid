@@ -1,0 +1,212 @@
+{% comment %}
+  Product Price Display with VAT
+  Shows both Ex VAT and Inc VAT prices
+
+  Parameters:
+  - product: Product object (required)
+  - variant: Variant object (optional, defaults to selected_or_first_available_variant)
+  - show_vat: Boolean to show VAT pricing (optional, defaults to theme settings)
+
+  Usage:
+  {% render 'product-price', product: product %}
+  {% render 'product-price', product: product, variant: current_variant %}
+{% endcomment %}
+
+{% liquid
+  assign current_variant = variant | default: product.selected_or_first_available_variant
+  assign show_vat_pricing = show_vat | default: settings.enable_vat_pricing
+  assign vat_rate = settings.vat_rate_percentage | default: 20
+  assign vat_ex_label = settings.vat_ex_label | default: 'Ex VAT'
+  assign vat_inc_label = settings.vat_inc_label | default: 'Inc VAT'
+%}
+
+<div class="product-price" data-product-price>
+  {% if current_variant.compare_at_price > current_variant.price %}
+    {%- comment -%} Sale price {%- endcomment -%}
+    <div class="product-price__sale">
+      {% if show_vat_pricing %}
+        <div class="product-price__vat">
+          <span class="product-price__ex-vat">
+            <span class="price__amount price__amount--sale" data-price-ex-vat>
+              {{ current_variant.price | money }}
+            </span>
+            <span class="price__label">{{ vat_ex_label }}</span>
+          </span>
+
+          <span class="product-price__inc-vat">
+            {% assign vat_multiplier = vat_rate | divided_by: 100.0 | plus: 1 %}
+            {% assign price_with_vat = current_variant.price | times: vat_multiplier | round %}
+            <span class="price__amount price__amount--sale" data-price-inc-vat>
+              {{ price_with_vat | money }}
+            </span>
+            <span class="price__label">{{ vat_inc_label }}</span>
+          </span>
+        </div>
+
+        <div class="product-price__compare">
+          <span class="product-price__ex-vat">
+            <span class="price__amount price__amount--compare">
+              {{ current_variant.compare_at_price | money }}
+            </span>
+            <span class="price__label">{{ vat_ex_label }}</span>
+          </span>
+
+          <span class="product-price__inc-vat">
+            {% assign compare_price_with_vat = current_variant.compare_at_price | times: vat_multiplier | round %}
+            <span class="price__amount price__amount--compare">
+              {{ compare_price_with_vat | money }}
+            </span>
+            <span class="price__label">{{ vat_inc_label }}</span>
+          </span>
+        </div>
+      {% else %}
+        <span class="price__amount price__amount--sale">
+          {{ current_variant.price | money }}
+        </span>
+        <span class="price__amount price__amount--compare">
+          {{ current_variant.compare_at_price | money }}
+        </span>
+      {% endif %}
+    </div>
+
+  {% else %}
+    {%- comment -%} Regular price {%- endcomment -%}
+    {% if show_vat_pricing %}
+      <div class="product-price__vat">
+        <span class="product-price__ex-vat">
+          <span class="price__amount" data-price-ex-vat>
+            {{ current_variant.price | money }}
+          </span>
+          <span class="price__label">{{ vat_ex_label }}</span>
+        </span>
+
+        <span class="product-price__inc-vat">
+          {% assign vat_multiplier = vat_rate | divided_by: 100.0 | plus: 1 %}
+          {% assign price_with_vat = current_variant.price | times: vat_multiplier | round %}
+          <span class="price__amount" data-price-inc-vat>
+            {{ price_with_vat | money }}
+          </span>
+          <span class="price__label">{{ vat_inc_label }}</span>
+        </span>
+      </div>
+    {% else %}
+      <span class="price__amount">
+        {{ current_variant.price | money }}
+      </span>
+    {% endif %}
+  {% endif %}
+
+  {%- comment -%} Price range for products with multiple variants {%- endcomment -%}
+  {% if product.price_varies and variant == blank %}
+    <div class="product-price__range small text-muted">
+      {% if show_vat_pricing %}
+        {% assign min_price_with_vat = product.price_min | times: vat_multiplier | round %}
+        {% assign max_price_with_vat = product.price_max | times: vat_multiplier | round %}
+        {{ product.price_min | money }} - {{ product.price_max | money }} {{ vat_ex_label }}
+        <br>
+        {{ min_price_with_vat | money }} - {{ max_price_with_vat | money }} {{ vat_inc_label }}
+      {% else %}
+        {{ product.price_min | money }} - {{ product.price_max | money }}
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {%- comment -%} Unit price {%- endcomment -%}
+  {% if current_variant.unit_price_measurement %}
+    <div class="product-price__unit small text-muted">
+      <span class="unit-price__amount">
+        {{ current_variant.unit_price | money }}
+      </span>
+      /
+      {% if current_variant.unit_price_measurement.reference_value != 1 %}
+        {{ current_variant.unit_price_measurement.reference_value }}
+      {% endif %}
+      {{ current_variant.unit_price_measurement.reference_unit }}
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  .product-price__vat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .product-price__ex-vat {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .product-price__ex-vat .price__amount {
+    font-size: 1.5rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-black);
+  }
+
+  .product-price__ex-vat .price__label {
+    font-size: var(--font-size-small);
+    color: var(--color-gray);
+    font-weight: var(--font-weight-regular);
+  }
+
+  .product-price__inc-vat {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .product-price__inc-vat .price__amount {
+    font-size: var(--font-size-body);
+    color: var(--color-charcoal);
+  }
+
+  .product-price__inc-vat .price__label {
+    font-size: var(--font-size-small);
+    color: var(--color-gray);
+  }
+
+  .price__amount--compare {
+    text-decoration: line-through;
+    color: var(--color-gray);
+  }
+
+  .price__amount--sale {
+    color: var(--color-error);
+  }
+
+  .product-price__compare {
+    margin-top: var(--spacing-sm);
+    opacity: 0.7;
+  }
+
+  .product-price__range {
+    margin-top: var(--spacing-xs);
+  }
+
+  .product-price__unit {
+    margin-top: var(--spacing-xs);
+  }
+</style>
+
+<script>
+  // Update VAT pricing when variant changes
+  if (typeof THEME !== 'undefined') {
+    const productPriceElement = document.querySelector('[data-product-price]');
+
+    if (productPriceElement) {
+      // Store VAT rate from theme settings
+      const vatRate = {{ vat_rate | json }};
+
+      // Listen for variant change events
+      document.addEventListener('variant:changed', (event) => {
+        const variant = event.detail.variant;
+
+        if (variant && variant.price) {
+          updateVATPricing(variant.price, vatRate);
+        }
+      });
+    }
+  }
+</script>

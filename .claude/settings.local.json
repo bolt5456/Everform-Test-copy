@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:everform.co.uk)",
+      "WebFetch(domain:account.everform.co.uk)",
+      "WebSearch",
+      "Bash(git init:*)",
+      "Bash(git config:*)"
+    ]
+  }
+}

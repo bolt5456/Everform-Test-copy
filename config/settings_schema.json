@@ -1,0 +1,266 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "Everform Custom Theme",
+    "theme_version": "1.0.0",
+    "theme_author": "Everform",
+    "theme_documentation_url": "",
+    "theme_support_url": ""
+  },
+  {
+    "name": "VAT Settings",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_vat_pricing",
+        "label": "Enable Ex VAT + Inc VAT Display",
+        "default": true,
+        "info": "Show both Ex VAT and Inc VAT prices on product pages"
+      },
+      {
+        "type": "range",
+        "id": "vat_rate_percentage",
+        "label": "VAT Rate",
+        "min": 0,
+        "max": 30,
+        "step": 0.5,
+        "unit": "%",
+        "default": 20,
+        "info": "UK standard VAT rate is 20%"
+      },
+      {
+        "type": "text",
+        "id": "vat_ex_label",
+        "label": "Ex VAT Label",
+        "default": "Ex VAT"
+      },
+      {
+        "type": "text",
+        "id": "vat_inc_label",
+        "label": "Inc VAT Label",
+        "default": "Inc VAT"
+      }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Primary Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_primary",
+        "label": "Primary Accent (Teal)",
+        "default": "#183E3F"
+      },
+      {
+        "type": "color",
+        "id": "color_primary_dark",
+        "label": "Primary Dark (Hover)",
+        "default": "#0F2627"
+      },
+      {
+        "type": "color",
+        "id": "color_primary_light",
+        "label": "Primary Light",
+        "default": "#2A5F61"
+      },
+      {
+        "type": "header",
+        "content": "Neutral Colors"
+      },
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text Color",
+        "default": "#1A1A1A"
+      },
+      {
+        "type": "color",
+        "id": "color_text_secondary",
+        "label": "Secondary Text",
+        "default": "#333333"
+      },
+      {
+        "type": "color",
+        "id": "color_text_muted",
+        "label": "Muted Text",
+        "default": "#666666"
+      },
+      {
+        "type": "color",
+        "id": "color_border",
+        "label": "Border Color",
+        "default": "#CCCCCC"
+      },
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background Color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "color_background_alt",
+        "label": "Alternate Background",
+        "default": "#F5F5F5"
+      }
+    ]
+  },
+  {
+    "name": "Typography",
+    "settings": [
+      {
+        "type": "font_picker",
+        "id": "font_heading",
+        "label": "Heading Font",
+        "default": "archivo_n7",
+        "info": "Bold weight for headings"
+      },
+      {
+        "type": "font_picker",
+        "id": "font_body",
+        "label": "Body Font",
+        "default": "questrial_n4",
+        "info": "Regular weight for body text"
+      },
+      {
+        "type": "range",
+        "id": "font_size_base",
+        "label": "Base Font Size",
+        "min": 14,
+        "max": 18,
+        "step": 1,
+        "unit": "px",
+        "default": 16
+      }
+    ]
+  },
+  {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "range",
+        "id": "container_max_width",
+        "label": "Container Max Width",
+        "min": 1200,
+        "max": 1600,
+        "step": 40,
+        "unit": "px",
+        "default": 1440
+      },
+      {
+        "type": "range",
+        "id": "section_padding_desktop",
+        "label": "Section Padding (Desktop)",
+        "min": 40,
+        "max": 120,
+        "step": 8,
+        "unit": "px",
+        "default": 80
+      },
+      {
+        "type": "range",
+        "id": "section_padding_mobile",
+        "label": "Section Padding (Mobile)",
+        "min": 24,
+        "max": 80,
+        "step": 8,
+        "unit": "px",
+        "default": 48
+      }
+    ]
+  },
+  {
+    "name": "Contact Information",
+    "settings": [
+      {
+        "type": "text",
+        "id": "contact_email",
+        "label": "Email Address",
+        "default": "enquiries@everform.co.uk"
+      },
+      {
+        "type": "text",
+        "id": "contact_phone",
+        "label": "Phone Number",
+        "default": "02380 170146"
+      },
+      {
+        "type": "text",
+        "id": "contact_hours",
+        "label": "Business Hours",
+        "default": "Mon-Fri, 08:00-17:30"
+      },
+      {
+        "type": "textarea",
+        "id": "contact_address",
+        "label": "Physical Address",
+        "default": "75 Bournemouth Road, Chandlers Ford, SO53 3AP"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram Handle",
+        "default": "@everformltd"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube Handle",
+        "default": "@everformlimited"
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "cart_show_contact_form",
+        "label": "Show Contact Form in Cart",
+        "default": true,
+        "info": "Display 'Any Questions?' contact form on cart page"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_show_order_notes",
+        "label": "Show Order Notes Field",
+        "default": true,
+        "info": "Allow customers to add special instructions"
+      }
+    ]
+  },
+  {
+    "name": "Product",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "product_show_vendor",
+        "label": "Show Vendor",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "product_show_sku",
+        "label": "Show SKU",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "product_enable_zoom",
+        "label": "Enable Image Zoom",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "quotation_page_url",
+        "label": "Request Quotation Page URL",
+        "default": "/pages/quotation-form",
+        "info": "URL for the quotation request page"
+      }
+    ]
+  }
+]
