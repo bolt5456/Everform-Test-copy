@@ -1,0 +1,134 @@
+{% comment %}
+  Main Product Section - Simple Template
+  For planters, edging, straightforward products
+  Two-column layout: Gallery + Product Info
+{% endcomment %}
+
+<div class="main-product main-product--simple">
+  <div class="container">
+    {%- comment -%}Breadcrumbs{%- endcomment -%}
+    {% if section.settings.show_breadcrumbs %}
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <div class="breadcrumbs__item">
+          <a href="{{ routes.root_url }}" class="breadcrumbs__link">Home</a>
+          <span class="breadcrumbs__separator">/</span>
+        </div>
+        {% if collection %}
+          <div class="breadcrumbs__item">
+            <a href="{{ collection.url }}" class="breadcrumbs__link">{{ collection.title }}</a>
+            <span class="breadcrumbs__separator">/</span>
+          </div>
+        {% endif %}
+        <div class="breadcrumbs__item">
+          <span class="breadcrumbs__current">{{ product.title }}</span>
+        </div>
+      </nav>
+    {% endif %}
+
+    <div class="main-product__grid">
+      {%- comment -%}Product Gallery{%- endcomment -%}
+      <div class="main-product__gallery">
+        {% render 'product-gallery-section' %}
+      </div>
+
+      {%- comment -%}Product Information{%- endcomment -%}
+      <div class="main-product__info">
+        {% render 'product-info-section' %}
+      </div>
+    </div>
+
+    {%- comment -%}Full-width product description (if rich content){%- endcomment -%}
+    {% if section.settings.show_full_description and product.description != blank %}
+      <div class="main-product__description-full">
+        <div class="rte">
+          {{ product.description }}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{%- comment -%}Inline gallery section rendering{%- endcomment -%}
+{% capture product_gallery_section %}
+  {% section 'product-gallery' %}
+{% endcapture %}
+
+{%- comment -%}Inline product-info section rendering{%- endcomment -%}
+{% capture product_info_section %}
+  {% section 'product-info' %}
+{% endcapture %}
+
+{%- comment -%}Product schema markup{%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ product.description | strip_html | json }},
+  "image": {{ product.featured_media | image_url: width: 1200 | prepend: 'https:' | json }},
+  "sku": {{ product.selected_or_first_available_variant.sku | json }},
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | json }}
+  },
+  "offers": {
+    "@type": "Offer",
+    "url": {{ shop.url | append: product.url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "price": "{{ product.selected_or_first_available_variant.price | divided_by: 100.0 }}",
+    "availability": "{% if product.selected_or_first_available_variant.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "seller": {
+      "@type": "Organization",
+      "name": {{ shop.name | json }}
+    }
+  }
+}
+</script>
+
+<style>
+  .main-product {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .main-product__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2xl);
+    margin-top: var(--spacing-lg);
+  }
+
+  @media (min-width: 1024px) {
+    .main-product__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-3xl);
+    }
+  }
+
+  .main-product__description-full {
+    margin-top: var(--spacing-3xl);
+    padding-top: var(--spacing-3xl);
+    border-top: 1px solid var(--color-border);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Product - Simple",
+  "class": "section-product-simple",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show Breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_full_description",
+      "label": "Show Full Description Below",
+      "default": false,
+      "info": "Display full product description in full-width section below product info"
+    }
+  ]
+}
+{% endschema %}

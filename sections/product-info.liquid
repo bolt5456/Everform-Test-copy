@@ -1,0 +1,491 @@
+{% comment %}
+  Product Information Section
+  Includes: Title, Price (VAT), Variants, Quantity, Add to Cart
+  Critical feature: VAT pricing display
+{% endcomment %}
+
+<div class="product-info" data-product-info>
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+
+  {%- comment -%}Product vendor (optional){%- endcomment -%}
+  {% if section.settings.show_vendor and product.vendor != blank %}
+    <div class="product-info__vendor small text-muted">
+      {{ product.vendor }}
+    </div>
+  {% endif %}
+
+  {%- comment -%}Product title{%- endcomment -%}
+  <h1 class="product-info__title">{{ product.title }}</h1>
+
+  {%- comment -%}Product price with VAT{%- endcomment -%}
+  <div class="product-info__price-wrapper">
+    {% render 'product-price', product: product, variant: current_variant %}
+  </div>
+
+  {%- comment -%}Stock status{%- endcomment -%}
+  {% if section.settings.show_stock_status %}
+    <div class="product-info__stock">
+      {% if current_variant.available %}
+        <span class="badge stock-badge--in-stock">In Stock</span>
+      {% else %}
+        <span class="badge stock-badge--out-of-stock">Sold Out</span>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {%- comment -%}Product form{%- endcomment -%}
+  {% form 'product', product, id: 'product-form', class: 'product-form' %}
+    <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+    {%- comment -%}Variant selectors{%- endcomment -%}
+    {% unless product.has_only_default_variant %}
+      <div class="product-form__variants">
+        {% for option in product.options_with_values %}
+          <div class="form-group">
+            <label for="Option-{{ section.id }}-{{ forloop.index0 }}" class="form-label">
+              {{ option.name }}
+            </label>
+            <select
+              id="Option-{{ section.id }}-{{ forloop.index0 }}"
+              name="options[{{ option.name | escape }}]"
+              class="form-select"
+              data-option-select
+              data-option-index="{{ forloop.index0 }}"
+            >
+              {% for value in option.values %}
+                <option
+                  value="{{ value | escape }}"
+                  {% if option.selected_value == value %}selected="selected"{% endif %}
+                >
+                  {{ value }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+        {% endfor %}
+      </div>
+    {% endunless %}
+
+    {%- comment -%}Quantity selector and Add to Cart{%- endcomment -%}
+    <div class="product-form__actions">
+      <div class="product-form__quantity">
+        <label for="Quantity-{{ section.id }}" class="form-label">
+          Quantity
+        </label>
+        <div class="quantity-selector">
+          <button type="button" class="quantity-selector__button" data-quantity-decrease aria-label="Decrease quantity">
+            <svg width="12" height="2" viewBox="0 0 12 2" fill="currentColor">
+              <rect width="12" height="2"/>
+            </svg>
+          </button>
+          <input
+            type="number"
+            id="Quantity-{{ section.id }}"
+            name="quantity"
+            value="1"
+            min="1"
+            class="quantity-selector__input"
+            aria-label="Quantity"
+          >
+          <button type="button" class="quantity-selector__button" data-quantity-increase aria-label="Increase quantity">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+              <rect x="5" width="2" height="12"/>
+              <rect y="5" width="12" height="2"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="product-form__submit">
+        <button
+          type="submit"
+          name="add"
+          class="btn btn--primary btn--full"
+          {% unless current_variant.available %}disabled{% endunless %}
+        >
+          {% if current_variant.available %}
+            {{ section.settings.add_to_cart_text }}
+          {% else %}
+            {{ section.settings.sold_out_text }}
+          {% endif %}
+        </button>
+      </div>
+    </div>
+
+    {%- comment -%}SKU (optional){%- endcomment -%}
+    {% if section.settings.show_sku and current_variant.sku != blank %}
+      <div class="product-info__sku small text-muted">
+        <strong>SKU:</strong> <span data-variant-sku>{{ current_variant.sku }}</span>
+      </div>
+    {% endif %}
+
+    {%- comment -%}Shipping information{%- endcomment -%}
+    {% if section.settings.show_shipping_info %}
+      <div class="product-info__shipping small text-muted">
+        {{ section.settings.shipping_text }}
+        {% if section.settings.shipping_link_text != blank and section.settings.shipping_link_url != blank %}
+          <a href="{{ section.settings.shipping_link_url }}" class="link-plain">
+            {{ section.settings.shipping_link_text }}
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endform %}
+
+  {%- comment -%}Product metafields (simple display){%- endcomment -%}
+  {% if section.settings.show_metafields %}
+    <div class="product-info__meta">
+      {% if product.metafields.custom.material != blank %}
+        <div class="product-info__meta-item">
+          <strong>Material:</strong> {{ product.metafields.custom.material }}
+        </div>
+      {% endif %}
+
+      {% if product.metafields.custom.lead_time != blank %}
+        <div class="product-info__meta-item">
+          <strong>Lead Time:</strong> {{ product.metafields.custom.lead_time }}
+        </div>
+      {% endif %}
+
+      {% if product.metafields.custom.warranty != blank %}
+        <div class="product-info__meta-item">
+          <strong>Warranty:</strong> {{ product.metafields.custom.warranty }}
+        </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {%- comment -%}Quote CTA{%- endcomment -%}
+  {% if section.settings.show_quote_cta %}
+    <div class="product-info__quote-cta">
+      <p class="small">{{ section.settings.quote_cta_text }}</p>
+      <a href="{{ settings.quotation_page_url }}" class="btn btn--secondary">
+        {{ section.settings.quote_cta_button_text }}
+      </a>
+    </div>
+  {% endif %}
+
+  {%- comment -%}Product description{%- endcomment -%}
+  {% if section.settings.show_description and product.description != blank %}
+    <div class="product-info__description rte">
+      {{ product.description }}
+    </div>
+  {% endif %}
+</div>
+
+<script>
+  // Product variant selection and price updates
+  (function() {
+    const productForm = document.querySelector('#product-form');
+    if (!productForm) return;
+
+    const optionSelects = productForm.querySelectorAll('[data-option-select]');
+    const variantIdInput = productForm.querySelector('input[name="id"]');
+    const submitButton = productForm.querySelector('button[type="submit"]');
+    const skuElement = document.querySelector('[data-variant-sku]');
+
+    const productData = {{ product | json }};
+    const vatRate = {{ settings.vat_rate_percentage | default: 20 }};
+
+    // Find variant based on selected options
+    function getSelectedVariant() {
+      const selectedOptions = Array.from(optionSelects).map(select => select.value);
+
+      return productData.variants.find(variant => {
+        return variant.options.every((option, index) => option === selectedOptions[index]);
+      });
+    }
+
+    // Update UI when variant changes
+    function updateVariant() {
+      const selectedVariant = getSelectedVariant();
+
+      if (!selectedVariant) return;
+
+      // Update hidden variant ID input
+      variantIdInput.value = selectedVariant.id;
+
+      // Update price
+      if (typeof updateVATPricing === 'function') {
+        updateVATPricing(selectedVariant.price, vatRate);
+      }
+
+      // Update submit button
+      if (selectedVariant.available) {
+        submitButton.disabled = false;
+        submitButton.textContent = {{ section.settings.add_to_cart_text | json }};
+      } else {
+        submitButton.disabled = true;
+        submitButton.textContent = {{ section.settings.sold_out_text | json }};
+      }
+
+      // Update SKU
+      if (skuElement && selectedVariant.sku) {
+        skuElement.textContent = selectedVariant.sku;
+      }
+
+      // Update URL without page reload
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.set('variant', selectedVariant.id);
+      window.history.replaceState({}, '', newUrl);
+
+      // Dispatch custom event for other scripts
+      document.dispatchEvent(new CustomEvent('variant:changed', {
+        detail: { variant: selectedVariant }
+      }));
+    }
+
+    // Listen for option changes
+    optionSelects.forEach(select => {
+      select.addEventListener('change', updateVariant);
+    });
+
+    // Handle form submission (AJAX add to cart)
+    productForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(productForm);
+      const variantId = formData.get('id');
+      const quantity = parseInt(formData.get('quantity')) || 1;
+
+      try {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Adding...';
+
+        await addToCart(variantId, quantity);
+
+        // Show success message (you can customize this)
+        submitButton.textContent = 'Added!';
+        setTimeout(() => {
+          submitButton.textContent = {{ section.settings.add_to_cart_text | json }};
+          submitButton.disabled = false;
+        }, 2000);
+
+        // Optionally redirect to cart
+        // window.location.href = '/cart';
+
+      } catch (error) {
+        console.error('Add to cart error:', error);
+        submitButton.textContent = 'Error - Try Again';
+        setTimeout(() => {
+          submitButton.textContent = {{ section.settings.add_to_cart_text | json }};
+          submitButton.disabled = false;
+        }, 2000);
+      }
+    });
+
+    // Set initial variant from URL if present
+    const urlParams = new URLSearchParams(window.location.search);
+    const variantIdFromUrl = urlParams.get('variant');
+
+    if (variantIdFromUrl) {
+      const variant = productData.variants.find(v => v.id == variantIdFromUrl);
+      if (variant) {
+        variant.options.forEach((option, index) => {
+          if (optionSelects[index]) {
+            optionSelects[index].value = option;
+          }
+        });
+        updateVariant();
+      }
+    }
+  })();
+</script>
+
+<style>
+  .product-info {
+    padding: var(--spacing-lg) 0;
+  }
+
+  .product-info__vendor {
+    margin-bottom: var(--spacing-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-caps);
+  }
+
+  .product-info__title {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .product-info__price-wrapper {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .product-info__stock {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .product-form__variants {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .product-form__actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  @media (min-width: 768px) {
+    .product-form__actions {
+      grid-template-columns: auto 1fr;
+      align-items: end;
+    }
+  }
+
+  .product-info__sku {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .product-info__shipping {
+    padding: var(--spacing-md);
+    background-color: var(--color-off-white);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .product-info__meta {
+    padding: var(--spacing-lg);
+    background-color: var(--color-off-white);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .product-info__meta-item {
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-small);
+  }
+
+  .product-info__meta-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .product-info__quote-cta {
+    padding: var(--spacing-lg);
+    background-color: var(--color-primary-light);
+    color: var(--color-white);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+  }
+
+  .product-info__quote-cta p {
+    margin-bottom: var(--spacing-md);
+    color: var(--color-white);
+  }
+
+  .product-info__description {
+    margin-top: var(--spacing-2xl);
+    padding-top: var(--spacing-2xl);
+    border-top: 1px solid var(--color-border);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Product Information",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show Vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sku",
+      "label": "Show SKU",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_stock_status",
+      "label": "Show Stock Status Badge",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_text",
+      "label": "Add to Cart Button Text",
+      "default": "Add to Cart"
+    },
+    {
+      "type": "text",
+      "id": "sold_out_text",
+      "label": "Sold Out Button Text",
+      "default": "Sold Out"
+    },
+    {
+      "type": "header",
+      "content": "Shipping Information"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_shipping_info",
+      "label": "Show Shipping Information",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "shipping_text",
+      "label": "Shipping Text",
+      "default": "Free UK mainland delivery."
+    },
+    {
+      "type": "text",
+      "id": "shipping_link_text",
+      "label": "Shipping Link Text",
+      "default": "View shipping policy"
+    },
+    {
+      "type": "url",
+      "id": "shipping_link_url",
+      "label": "Shipping Link URL",
+      "default": "/policies/shipping-policy"
+    },
+    {
+      "type": "header",
+      "content": "Product Metafields"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_metafields",
+      "label": "Show Product Metafields",
+      "default": true,
+      "info": "Displays Material, Lead Time, and Warranty if set"
+    },
+    {
+      "type": "header",
+      "content": "Quote CTA"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quote_cta",
+      "label": "Show Request Quote CTA",
+      "default": true
+    },
+    {
+      "type": "textarea",
+      "id": "quote_cta_text",
+      "label": "Quote CTA Text",
+      "default": "Need custom sizing or bespoke fabrication?"
+    },
+    {
+      "type": "text",
+      "id": "quote_cta_button_text",
+      "label": "Quote Button Text",
+      "default": "Request Custom Quote"
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show Product Description",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

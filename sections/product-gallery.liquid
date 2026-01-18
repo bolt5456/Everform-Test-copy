@@ -1,0 +1,344 @@
+{% comment %}
+  Product Image Gallery
+  Features: Main image, thumbnails, zoom capability, modal view
+{% endcomment %}
+
+<div class="product-gallery" data-product-gallery>
+  {%- assign featured_media = product.selected_or_first_available_variant.featured_media | default: product.featured_media -%}
+
+  {%- comment -%}Main image{%- endcomment -%}
+  <div class="product-gallery__main">
+    <div class="product-gallery__main-wrapper">
+      {% if featured_media %}
+        <img
+          src="{{ featured_media | image_url: width: 1200 }}"
+          srcset="
+            {{ featured_media | image_url: width: 600 }} 600w,
+            {{ featured_media | image_url: width: 900 }} 900w,
+            {{ featured_media | image_url: width: 1200 }} 1200w,
+            {{ featured_media | image_url: width: 1500 }} 1500w
+          "
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          alt="{{ featured_media.alt | escape }}"
+          width="1200"
+          height="1500"
+          loading="eager"
+          class="product-gallery__image"
+          data-main-image
+        >
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag: 'product-gallery__placeholder' }}
+      {% endif %}
+
+      {%- comment -%}Zoom icon (optional){%- endcomment -%}
+      {% if section.settings.enable_zoom and product.media.size > 0 %}
+        <button type="button" class="product-gallery__zoom-button" data-zoom-trigger aria-label="Zoom image">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+            <path d="M11 8v6"/>
+            <path d="M8 11h6"/>
+          </svg>
+        </button>
+      {% endif %}
+
+      {%- comment -%}Product badges{%- endcomment -%}
+      {% if product.compare_at_price > product.price %}
+        <div class="product-gallery__badge">
+          <span class="badge badge--error">Sale</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {%- comment -%}Thumbnail navigation{%- endcomment -%}
+  {% if product.media.size > 1 %}
+    <div class="product-gallery__thumbnails">
+      {% for media in product.media limit: section.settings.max_thumbnails %}
+        <button
+          type="button"
+          class="product-gallery__thumbnail{% if media.id == featured_media.id %} is-active{% endif %}"
+          data-thumbnail
+          data-media-id="{{ media.id }}"
+          data-media-position="{{ forloop.index }}"
+          aria-label="View image {{ forloop.index }}"
+        >
+          {% case media.media_type %}
+            {% when 'image' %}
+              <img
+                src="{{ media | image_url: width: 200 }}"
+                alt="{{ media.alt | escape }}"
+                width="100"
+                height="125"
+                loading="lazy"
+              >
+            {% when 'video' %}
+              <img
+                src="{{ media.preview_image | image_url: width: 200 }}"
+                alt="{{ media.alt | escape }}"
+                width="100"
+                height="125"
+                loading="lazy"
+              >
+              <svg class="product-gallery__video-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            {% when 'external_video' %}
+              <img
+                src="{{ media.preview_image | image_url: width: 200 }}"
+                alt="{{ media.alt | escape }}"
+                width="100"
+                height="125"
+                loading="lazy"
+              >
+              <svg class="product-gallery__video-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+            {% when 'model' %}
+              <img
+                src="{{ media.preview_image | image_url: width: 200 }}"
+                alt="{{ media.alt | escape }}"
+                width="100"
+                height="125"
+                loading="lazy"
+              >
+              <svg class="product-gallery__model-icon" width="24" height="24" viewBox="0 0 24 24" fill="white">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+          {% endcase %}
+        </button>
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>
+
+{%- comment -%}Image zoom modal{%- endcomment -%}
+{% if section.settings.enable_zoom %}
+  <div class="modal product-gallery-modal" id="product-gallery-modal" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__content">
+      <div class="modal__header">
+        <h2 class="modal__title">{{ product.title }}</h2>
+        <button type="button" class="modal__close" data-modal-close aria-label="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <img src="" alt="" class="product-gallery-modal__image" data-modal-image>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<script>
+  // Product gallery functionality
+  (function() {
+    const gallery = document.querySelector('[data-product-gallery]');
+    if (!gallery) return;
+
+    const mainImage = gallery.querySelector('[data-main-image]');
+    const thumbnails = gallery.querySelectorAll('[data-thumbnail]');
+    const zoomTrigger = gallery.querySelector('[data-zoom-trigger]');
+    const modal = document.getElementById('product-gallery-modal');
+    const modalImage = modal ? modal.querySelector('[data-modal-image]') : null;
+    const modalCloseButtons = modal ? modal.querySelectorAll('[data-modal-close]') : [];
+
+    // Thumbnail click handlers
+    thumbnails.forEach(thumbnail => {
+      thumbnail.addEventListener('click', () => {
+        const mediaId = thumbnail.dataset.mediaId;
+
+        // Find the corresponding media
+        const productMedia = {{ product.media | json }};
+        const selectedMedia = productMedia.find(media => media.id == mediaId);
+
+        if (selectedMedia && mainImage) {
+          // Update main image
+          mainImage.src = selectedMedia.src;
+          mainImage.srcset = `
+            ${selectedMedia.src.replace('.jpg', '_600x.jpg')} 600w,
+            ${selectedMedia.src.replace('.jpg', '_900x.jpg')} 900w,
+            ${selectedMedia.src.replace('.jpg', '_1200x.jpg')} 1200w,
+            ${selectedMedia.src.replace('.jpg', '_1500x.jpg')} 1500w
+          `;
+          mainImage.alt = selectedMedia.alt || '';
+
+          // Update active state
+          thumbnails.forEach(t => t.classList.remove('is-active'));
+          thumbnail.classList.add('is-active');
+        }
+      });
+    });
+
+    // Zoom functionality
+    if (zoomTrigger && modal && modalImage) {
+      zoomTrigger.addEventListener('click', () => {
+        modalImage.src = mainImage.src;
+        modalImage.alt = mainImage.alt;
+        openModal('product-gallery-modal');
+      });
+
+      // Close modal
+      modalCloseButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          closeModal(modal);
+        });
+      });
+    }
+
+    // Listen for variant changes to update gallery
+    document.addEventListener('variant:changed', (event) => {
+      const variant = event.detail.variant;
+
+      if (variant && variant.featured_media) {
+        const thumbnail = gallery.querySelector(`[data-media-id="${variant.featured_media.id}"]`);
+        if (thumbnail) {
+          thumbnail.click();
+        }
+      }
+    });
+  })();
+</script>
+
+<style>
+  .product-gallery {
+    position: sticky;
+    top: calc(var(--spacing-4xl) + 60px); /* Adjust based on header height */
+  }
+
+  .product-gallery__main {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .product-gallery__main-wrapper {
+    position: relative;
+    width: 100%;
+    background-color: var(--color-white);
+    overflow: hidden;
+  }
+
+  .product-gallery__image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .product-gallery__placeholder {
+    width: 100%;
+    height: auto;
+    background-color: var(--color-off-white);
+  }
+
+  .product-gallery__zoom-button {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-base);
+  }
+
+  .product-gallery__zoom-button:hover {
+    background-color: var(--color-white);
+  }
+
+  .product-gallery__badge {
+    position: absolute;
+    top: var(--spacing-md);
+    left: var(--spacing-md);
+  }
+
+  .product-gallery__thumbnails {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: var(--spacing-sm);
+  }
+
+  .product-gallery__thumbnail {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border: 2px solid transparent;
+    background-color: var(--color-white);
+    cursor: pointer;
+    transition: border-color var(--transition-base);
+  }
+
+  .product-gallery__thumbnail:hover {
+    border-color: var(--color-light-gray);
+  }
+
+  .product-gallery__thumbnail.is-active {
+    border-color: var(--color-primary);
+  }
+
+  .product-gallery__thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-gallery__video-icon,
+  .product-gallery__model-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+
+  /* Modal styles */
+  .product-gallery-modal .modal__body {
+    padding: 0;
+    max-height: 80vh;
+    overflow: auto;
+  }
+
+  .product-gallery-modal__image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  @media (min-width: 1024px) {
+    .product-gallery__thumbnails {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Product Gallery",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "enable_zoom",
+      "label": "Enable Image Zoom",
+      "default": true,
+      "info": "Allows customers to click images to view larger version"
+    },
+    {
+      "type": "range",
+      "id": "max_thumbnails",
+      "label": "Maximum Thumbnails",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "default": 12,
+      "info": "Maximum number of thumbnail images to display"
+    }
+  ]
+}
+{% endschema %}

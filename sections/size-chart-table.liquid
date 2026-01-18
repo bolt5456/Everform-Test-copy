@@ -1,0 +1,384 @@
+{% comment %}
+  Size Chart Table Section
+  Displays product sizing information from metafield
+  For technical products like copings
+{% endcomment %}
+
+<div class="size-chart-section">
+  {% if section.settings.heading != blank %}
+    <h2 class="size-chart-section__heading">{{ section.settings.heading }}</h2>
+  {% endif %}
+
+  {% if section.settings.description != blank %}
+    <div class="size-chart-section__description rte">
+      {{ section.settings.description }}
+    </div>
+  {% endif %}
+
+  {%- comment -%}Size chart from metafield (rich text HTML table){%- endcomment -%}
+  {% if product.metafields.custom.size_chart %}
+    <div class="size-chart-wrapper">
+      <div class="size-chart-table-container">
+        {{ product.metafields.custom.size_chart }}
+      </div>
+    </div>
+  {% else %}
+    {%- comment -%}Fallback: Manual table from blocks{%- endcomment -%}
+    {% if section.blocks.size > 0 %}
+      <div class="size-chart-wrapper">
+        <div class="table-wrapper">
+          <table class="size-chart-table">
+            <thead>
+              <tr>
+                {% for block in section.blocks %}
+                  {% if block.type == 'header' %}
+                    <th {{ block.shopify_attributes }}>{{ block.settings.text }}</th>
+                  {% endif %}
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              {% assign row_count = 0 %}
+              {% for block in section.blocks %}
+                {% if block.type == 'row_start' %}
+                  {% assign row_count = row_count | plus: 1 %}
+                  <tr>
+                {% endif %}
+                {% if block.type == 'cell' %}
+                  <td {{ block.shopify_attributes }}>{{ block.settings.text }}</td>
+                {% endif %}
+                {% if block.type == 'row_end' %}
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {%- comment -%}Engineering drawing{%- endcomment -%}
+  {% if section.settings.show_drawing and product.metafields.custom.engineering_drawing %}
+    <div class="size-chart-section__drawing">
+      <h3 class="size-chart-section__drawing-heading">Technical Drawing</h3>
+      <div class="size-chart-section__drawing-wrapper">
+        <img
+          src="{{ product.metafields.custom.engineering_drawing | image_url: width: 1500 }}"
+          srcset="
+            {{ product.metafields.custom.engineering_drawing | image_url: width: 800 }} 800w,
+            {{ product.metafields.custom.engineering_drawing | image_url: width: 1200 }} 1200w,
+            {{ product.metafields.custom.engineering_drawing | image_url: width: 1500 }} 1500w
+          "
+          sizes="(min-width: 1024px) 60vw, 90vw"
+          alt="Technical drawing of {{ product.title }}"
+          loading="lazy"
+          class="size-chart-section__drawing-image"
+          data-drawing-image
+        >
+
+        {% if section.settings.enable_drawing_zoom %}
+          <button type="button" class="size-chart-section__zoom-button" data-drawing-zoom aria-label="Zoom drawing">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="8" cy="8" r="6"/>
+              <path d="m18 18-4.35-4.35"/>
+              <path d="M8 5v6"/>
+              <path d="M5 8h6"/>
+            </svg>
+          </button>
+        {% endif %}
+      </div>
+
+      {% if section.settings.drawing_caption != blank %}
+        <p class="size-chart-section__drawing-caption small text-muted">
+          {{ section.settings.drawing_caption }}
+        </p>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {%- comment -%}Additional notes{%- endcomment -%}
+  {% if section.settings.notes != blank %}
+    <div class="size-chart-section__notes">
+      <div class="rte">
+        {{ section.settings.notes }}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{%- comment -%}Drawing zoom modal{%- endcomment -%}
+{% if section.settings.show_drawing and section.settings.enable_drawing_zoom and product.metafields.custom.engineering_drawing %}
+  <div class="modal drawing-zoom-modal" id="drawing-zoom-modal" aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <div class="modal__content modal__content--large">
+      <div class="modal__header">
+        <h2 class="modal__title">Technical Drawing</h2>
+        <button type="button" class="modal__close" data-modal-close aria-label="Close">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="modal__body">
+        <img
+          src="{{ product.metafields.custom.engineering_drawing | image_url: width: 2000 }}"
+          alt="Technical drawing of {{ product.title }} - Full size"
+          class="drawing-zoom-modal__image"
+        >
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<script>
+  // Drawing zoom functionality
+  (function() {
+    const zoomButton = document.querySelector('[data-drawing-zoom]');
+    const modal = document.getElementById('drawing-zoom-modal');
+    const closeButtons = modal ? modal.querySelectorAll('[data-modal-close]') : [];
+
+    if (zoomButton && modal) {
+      zoomButton.addEventListener('click', () => {
+        openModal('drawing-zoom-modal');
+      });
+
+      closeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          closeModal(modal);
+        });
+      });
+    }
+  })();
+</script>
+
+<style>
+  .size-chart-section {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .size-chart-section__heading {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .size-chart-section__description {
+    margin-bottom: var(--spacing-lg);
+    color: var(--color-charcoal);
+  }
+
+  .size-chart-wrapper {
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  /* Override default table styles for size chart */
+  .size-chart-table-container table,
+  .size-chart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--spacing-lg) 0;
+    font-size: var(--font-size-small);
+    background-color: var(--color-white);
+  }
+
+  .size-chart-table-container th,
+  .size-chart-table-container td,
+  .size-chart-table th,
+  .size-chart-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border: 1px solid var(--color-border);
+  }
+
+  .size-chart-table-container th,
+  .size-chart-table th {
+    background-color: var(--color-off-white);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-black);
+  }
+
+  .size-chart-table-container tbody tr:hover,
+  .size-chart-table tbody tr:hover {
+    background-color: var(--color-off-white);
+  }
+
+  /* Responsive table */
+  @media (max-width: 767px) {
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .size-chart-table-container table,
+    .size-chart-table {
+      min-width: 600px;
+    }
+  }
+
+  /* Engineering drawing */
+  .size-chart-section__drawing {
+    margin-top: var(--spacing-2xl);
+    padding-top: var(--spacing-2xl);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .size-chart-section__drawing-heading {
+    font-size: var(--font-size-h4-mobile);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .size-chart-section__drawing-wrapper {
+    position: relative;
+    background-color: var(--color-white);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    margin-bottom: var(--spacing-md);
+  }
+
+  .size-chart-section__drawing-image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .size-chart-section__zoom-button {
+    position: absolute;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background-color var(--transition-base);
+  }
+
+  .size-chart-section__zoom-button:hover {
+    background-color: var(--color-white);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .size-chart-section__drawing-caption {
+    font-style: italic;
+  }
+
+  .size-chart-section__notes {
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    background-color: var(--color-off-white);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--color-primary);
+  }
+
+  /* Modal adjustments for large drawings */
+  .modal__content--large {
+    max-width: 1200px;
+  }
+
+  .drawing-zoom-modal .modal__body {
+    padding: var(--spacing-md);
+    background-color: var(--color-off-white);
+  }
+
+  .drawing-zoom-modal__image {
+    width: 100%;
+    height: auto;
+    display: block;
+    background-color: var(--color-white);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Size Chart Table",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Section Heading",
+      "default": "Size Chart"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "info": "Optional description above the size chart"
+    },
+    {
+      "type": "richtext",
+      "id": "notes",
+      "label": "Additional Notes",
+      "info": "Displayed below the size chart in a highlighted box"
+    },
+    {
+      "type": "header",
+      "content": "Engineering Drawing"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_drawing",
+      "label": "Show Engineering Drawing",
+      "default": true,
+      "info": "Displays product.metafields.custom.engineering_drawing"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_drawing_zoom",
+      "label": "Enable Drawing Zoom",
+      "default": true,
+      "info": "Allows clicking drawing to view full-size version"
+    },
+    {
+      "type": "text",
+      "id": "drawing_caption",
+      "label": "Drawing Caption",
+      "default": "Click image to view full-size technical drawing"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "header",
+      "name": "Table Header",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Header Text",
+          "default": "Column Header"
+        }
+      ]
+    },
+    {
+      "type": "row_start",
+      "name": "Start Row",
+      "settings": []
+    },
+    {
+      "type": "cell",
+      "name": "Table Cell",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Cell Text",
+          "default": "Cell content"
+        }
+      ]
+    },
+    {
+      "type": "row_end",
+      "name": "End Row",
+      "settings": []
+    }
+  ],
+  "presets": [
+    {
+      "name": "Size Chart Table"
+    }
+  ]
+}
+{% endschema %}

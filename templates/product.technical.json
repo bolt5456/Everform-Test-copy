@@ -1,0 +1,44 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product-technical",
+      "settings": {
+        "show_breadcrumbs": true
+      }
+    },
+    "size-chart": {
+      "type": "size-chart-table",
+      "settings": {
+        "heading": "Size Chart & Specifications",
+        "show_drawing": true,
+        "enable_drawing_zoom": true,
+        "drawing_caption": "Click image to view full-size technical drawing"
+      }
+    },
+    "technical-info": {
+      "type": "technical-accordions",
+      "settings": {
+        "heading": "Technical Information",
+        "show_features": true,
+        "show_specifications": true,
+        "show_installation": true,
+        "show_delivery": true
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "Related Products",
+        "products_to_show": 4,
+        "show_vendor": false,
+        "image_ratio": "4-5"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "size-chart",
+    "technical-info",
+    "related-products"
+  ]
+}

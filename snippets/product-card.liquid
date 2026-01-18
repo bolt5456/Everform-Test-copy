@@ -1,0 +1,255 @@
+{% comment %}
+  Product Card Snippet
+  Used in collection grids, featured products, related products
+
+  Parameters:
+  - product: Product object (required)
+  - show_vendor: Boolean (optional, default false)
+  - image_ratio: String - '4-5', '1-1', '4-3' (optional, default '4-5')
+  - lazy_load: Boolean (optional, default true)
+
+  Usage:
+  {% render 'product-card', product: product %}
+  {% render 'product-card', product: product, show_vendor: true, image_ratio: '1-1' %}
+{% endcomment %}
+
+{% liquid
+  assign show_vendor_param = show_vendor | default: false
+  assign image_ratio_param = image_ratio | default: '4-5'
+  assign lazy_load_param = lazy_load | default: true
+  assign product_url = product.url
+%}
+
+<article class="product-card">
+  <a href="{{ product_url }}" class="product-card__link">
+    {%- comment -%}Product image{%- endcomment -%}
+    <div class="product-card__image-wrapper aspect-ratio aspect-ratio--{{ image_ratio_param }}">
+      {% if product.featured_media %}
+        <img
+          src="{{ product.featured_media | image_url: width: 600 }}"
+          srcset="
+            {{ product.featured_media | image_url: width: 300 }} 300w,
+            {{ product.featured_media | image_url: width: 600 }} 600w,
+            {{ product.featured_media | image_url: width: 900 }} 900w
+          "
+          sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+          alt="{{ product.featured_media.alt | escape }}"
+          width="600"
+          height="{% if image_ratio_param == '4-5' %}750{% elsif image_ratio_param == '1-1' %}600{% else %}450{% endif %}"
+          {% if lazy_load_param %}loading="lazy"{% else %}loading="eager"{% endif %}
+          class="product-card__image"
+        >
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__placeholder' }}
+      {% endif %}
+
+      {%- comment -%}Product badges{%- endcomment -%}
+      {% if product.compare_at_price > product.price %}
+        <div class="product-card__badge">
+          <span class="badge badge--error">Sale</span>
+        </div>
+      {% elsif product.available == false %}
+        <div class="product-card__badge">
+          <span class="badge badge--neutral">Sold Out</span>
+        </div>
+      {% endif %}
+    </div>
+
+    {%- comment -%}Product info{%- endcomment -%}
+    <div class="product-card__content">
+      {%- comment -%}Vendor{%- endcomment -%}
+      {% if show_vendor_param and product.vendor != blank %}
+        <div class="product-card__vendor small text-muted">
+          {{ product.vendor }}
+        </div>
+      {% endif %}
+
+      {%- comment -%}Title{%- endcomment -%}
+      <h3 class="product-card__title">
+        {{ product.title }}
+      </h3>
+
+      {%- comment -%}Price with VAT{%- endcomment -%}
+      <div class="product-card__price">
+        {% if product.compare_at_price > product.price %}
+          {%- comment -%}Sale price{%- endcomment -%}
+          <div class="product-card__price-sale">
+            {% if settings.enable_vat_pricing %}
+              <span class="product-card__price-ex-vat">
+                <span class="price__amount price__amount--sale">{{ product.price | money }}</span>
+                <span class="price__label small">{{ settings.vat_ex_label }}</span>
+              </span>
+              <span class="product-card__price-compare small">
+                {{ product.compare_at_price | money }} {{ settings.vat_ex_label }}
+              </span>
+            {% else %}
+              <span class="price__amount price__amount--sale">{{ product.price | money }}</span>
+              <span class="price__amount price__amount--compare">{{ product.compare_at_price | money }}</span>
+            {% endif %}
+          </div>
+        {% else %}
+          {%- comment -%}Regular price{%- endcomment -%}
+          {% if settings.enable_vat_pricing %}
+            {% assign vat_rate = settings.vat_rate_percentage | default: 20 %}
+            {% assign vat_multiplier = vat_rate | divided_by: 100.0 | plus: 1 %}
+
+            {% if product.price_varies %}
+              {%- comment -%}Price range{%- endcomment -%}
+              <span class="product-card__price-range small">
+                From {{ product.price_min | money }} {{ settings.vat_ex_label }}
+              </span>
+            {% else %}
+              {%- comment -%}Single price{%- endcomment -%}
+              <span class="product-card__price-ex-vat">
+                {{ product.price | money }}
+              </span>
+              <span class="product-card__price-inc-vat small">
+                {% assign price_with_vat = product.price | times: vat_multiplier | round %}
+                {{ price_with_vat | money }} {{ settings.vat_inc_label }}
+              </span>
+            {% endif %}
+          {% else %}
+            {% if product.price_varies %}
+              <span class="product-card__price-range">
+                From {{ product.price_min | money }}
+              </span>
+            {% else %}
+              <span class="price__amount">
+                {{ product.price | money }}
+              </span>
+            {% endif %}
+          {% endif %}
+        {% endif %}
+      </div>
+
+      {%- comment -%}Quick add button (optional){%- endcomment -%}
+      {% comment %}
+      <button type="button" class="btn btn--secondary btn--sm product-card__quick-add" data-product-id="{{ product.id }}">
+        Quick Add
+      </button>
+      {% endcomment %}
+    </div>
+  </a>
+</article>
+
+<style>
+  .product-card {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border);
+    transition: box-shadow var(--transition-base);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  .product-card__link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .product-card__image-wrapper {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-white);
+  }
+
+  .product-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+  }
+
+  .product-card:hover .product-card__image {
+    transform: scale(1.05);
+  }
+
+  .product-card__placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-off-white);
+  }
+
+  .product-card__badge {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    z-index: 1;
+  }
+
+  .product-card__content {
+    padding: var(--spacing-lg);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-card__vendor {
+    margin-bottom: var(--spacing-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-caps);
+  }
+
+  .product-card__title {
+    font-size: var(--font-size-body);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-heading);
+    margin-bottom: var(--spacing-sm);
+    color: var(--color-black);
+    transition: color var(--transition-base);
+  }
+
+  .product-card:hover .product-card__title {
+    color: var(--color-primary);
+  }
+
+  .product-card__price {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: auto;
+  }
+
+  .product-card__price-ex-vat {
+    font-size: 1.125rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-black);
+  }
+
+  .product-card__price-inc-vat {
+    color: var(--color-gray);
+  }
+
+  .product-card__price-range {
+    font-size: var(--font-size-small);
+    color: var(--color-gray);
+  }
+
+  .product-card__price-sale {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .product-card__price-compare {
+    text-decoration: line-through;
+    color: var(--color-gray);
+  }
+
+  .price__amount--sale {
+    color: var(--color-error);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .product-card__quick-add {
+    margin-top: var(--spacing-md);
+    width: 100%;
+  }
+</style>

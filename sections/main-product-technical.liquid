@@ -1,0 +1,124 @@
+{% comment %}
+  Main Product Section - Technical Template
+  For copings, window pods, technical/architectural products
+  Two-column layout: Gallery + Product Info
+  Followed by size charts, technical specs, accordions
+{% endcomment %}
+
+<div class="main-product main-product--technical">
+  <div class="container">
+    {%- comment -%}Breadcrumbs{%- endcomment -%}
+    {% if section.settings.show_breadcrumbs %}
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <div class="breadcrumbs__item">
+          <a href="{{ routes.root_url }}" class="breadcrumbs__link">Home</a>
+          <span class="breadcrumbs__separator">/</span>
+        </div>
+        {% if collection %}
+          <div class="breadcrumbs__item">
+            <a href="{{ collection.url }}" class="breadcrumbs__link">{{ collection.title }}</a>
+            <span class="breadcrumbs__separator">/</span>
+          </div>
+        {% endif %}
+        <div class="breadcrumbs__item">
+          <span class="breadcrumbs__current">{{ product.title }}</span>
+        </div>
+      </nav>
+    {% endif %}
+
+    <div class="main-product__grid">
+      {%- comment -%}Product Gallery{%- endcomment -%}
+      <div class="main-product__gallery">
+        {% render 'product-gallery-section' %}
+      </div>
+
+      {%- comment -%}Product Information{%- endcomment -%}
+      <div class="main-product__info">
+        {% render 'product-info-section' %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{%- comment -%}Inline gallery section rendering{%- endcomment -%}
+{% capture product_gallery_section %}
+  {% section 'product-gallery' %}
+{% endcapture %}
+
+{%- comment -%}Inline product-info section rendering{%- endcomment -%}
+{% capture product_info_section %}
+  {% section 'product-info' %}
+{% endcapture %}
+
+{%- comment -%}Product schema markup with additional technical details{%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "description": {{ product.description | strip_html | json }},
+  "image": {{ product.featured_media | image_url: width: 1200 | prepend: 'https:' | json }},
+  "sku": {{ product.selected_or_first_available_variant.sku | json }},
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | default: shop.name | json }}
+  },
+  {% if product.metafields.custom.material %}
+  "material": {{ product.metafields.custom.material | json }},
+  {% endif %}
+  {% if product.metafields.custom.warranty %}
+  "warranty": {{ product.metafields.custom.warranty | json }},
+  {% endif %}
+  "offers": {
+    "@type": "Offer",
+    "url": {{ shop.url | append: product.url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "price": "{{ product.selected_or_first_available_variant.price | divided_by: 100.0 }}",
+    "availability": "{% if product.selected_or_first_available_variant.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "seller": {
+      "@type": "Organization",
+      "name": {{ shop.name | json }}
+    }
+  }
+}
+</script>
+
+<style>
+  .main-product {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .main-product__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2xl);
+    margin-top: var(--spacing-lg);
+  }
+
+  @media (min-width: 1024px) {
+    .main-product__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--spacing-3xl);
+    }
+  }
+
+  /* Technical product specific styles */
+  .main-product--technical {
+    background-color: var(--color-white);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Product - Technical",
+  "class": "section-product-technical",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show Breadcrumbs",
+      "default": true
+    }
+  ]
+}
+{% endschema %}
