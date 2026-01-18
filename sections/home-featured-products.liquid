@@ -1,0 +1,81 @@
+{% comment %}
+  Homepage Featured Products
+{% endcomment %}
+
+<section class="home-featured-products section">
+  <div class="container">
+    <div class="home-featured-products__header">
+      <h2>{{ section.settings.heading }}</h2>
+      {% if section.settings.subheading != blank %}
+        <p class="text-secondary">{{ section.settings.subheading }}</p>
+      {% endif %}
+    </div>
+
+    {% if section.settings.collection != blank %}
+      {% assign featured_collection = collections[section.settings.collection] %}
+      {% if featured_collection and featured_collection.products_count > 0 %}
+        <div class="product-grid">
+          {% for product in featured_collection.products limit: section.settings.products_to_show %}
+            {% render 'product-card', product: product, show_vendor: section.settings.show_vendor %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-muted">Select a collection with products.</p>
+      {% endif %}
+    {% else %}
+      <p class="text-muted">Select a featured collection in this section.</p>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .home-featured-products__header {
+    max-width: 60ch;
+    margin-bottom: var(--spacing-2xl);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Home Featured Products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured products"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Popular sizes and finishes available for fast delivery."
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Products to show",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 6
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show Vendor",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home Featured Products"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,77 @@
+{% comment %}
+  Main Collection
+{% endcomment %}
+
+<section class="main-collection section">
+  <div class="container">
+    <div class="main-collection__header">
+      <h1>{{ collection.title }}</h1>
+      {% if collection.description != blank %}
+        <div class="rte text-secondary">
+          {{ collection.description }}
+        </div>
+      {% endif %}
+    </div>
+
+    {% paginate collection.products by section.settings.products_per_page %}
+      <div class="product-grid{% if section.settings.columns_desktop == 4 %} product-grid--4{% endif %}">
+        {% for product in collection.products %}
+          {% render 'product-card', product: product, show_vendor: section.settings.show_vendor %}
+        {% else %}
+          <p class="text-muted">No products found in this collection.</p>
+        {% endfor %}
+      </div>
+
+      {% if paginate.pages > 1 %}
+        <div class="pagination">
+          {% if paginate.previous %}
+            <a href="{{ paginate.previous.url }}" class="pagination__item">Previous</a>
+          {% endif %}
+          <span class="pagination__item pagination__item--active">{{ paginate.current_page }}</span>
+          {% if paginate.next %}
+            <a href="{{ paginate.next.url }}" class="pagination__item">Next</a>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endpaginate %}
+  </div>
+</section>
+
+<style>
+  .main-collection__header {
+    max-width: 70ch;
+    margin-bottom: var(--spacing-2xl);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Main Collection",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 6,
+      "max": 24,
+      "step": 2,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Desktop columns",
+      "min": 3,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

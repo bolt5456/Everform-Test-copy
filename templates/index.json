@@ -1,0 +1,41 @@
+{
+  "sections": {
+    "hero": {
+      "type": "home-hero",
+      "settings": {}
+    },
+    "value-props": {
+      "type": "home-value-props",
+      "settings": {}
+    },
+    "featured-collections": {
+      "type": "home-featured-collections",
+      "settings": {}
+    },
+    "featured-products": {
+      "type": "home-featured-products",
+      "settings": {}
+    },
+    "projects": {
+      "type": "home-projects",
+      "settings": {}
+    },
+    "quote-cta": {
+      "type": "home-quote-cta",
+      "settings": {}
+    },
+    "contact": {
+      "type": "home-contact",
+      "settings": {}
+    }
+  },
+  "order": [
+    "hero",
+    "value-props",
+    "featured-collections",
+    "featured-products",
+    "projects",
+    "quote-cta",
+    "contact"
+  ]
+}

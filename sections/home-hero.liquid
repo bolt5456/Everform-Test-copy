@@ -1,0 +1,197 @@
+{% comment %}
+  Homepage Hero
+  Two-column layout with image and primary CTA
+{% endcomment %}
+
+<section class="home-hero">
+  <div class="container">
+    <div class="home-hero__grid">
+      <div class="home-hero__content">
+        {% if section.settings.eyebrow != blank %}
+          <div class="home-hero__eyebrow small text-uppercase text-muted">
+            {{ section.settings.eyebrow }}
+          </div>
+        {% endif %}
+
+        <h1 class="home-hero__heading">{{ section.settings.heading }}</h1>
+
+        {% if section.settings.subheading != blank %}
+          <p class="home-hero__subheading lead">
+            {{ section.settings.subheading }}
+          </p>
+        {% endif %}
+
+        <div class="home-hero__actions">
+          {% if section.settings.primary_button_text != blank and section.settings.primary_button_url != blank %}
+            <a href="{{ section.settings.primary_button_url }}" class="btn btn--primary">
+              {{ section.settings.primary_button_text }}
+            </a>
+          {% endif %}
+          {% if section.settings.secondary_button_text != blank and section.settings.secondary_button_url != blank %}
+            <a href="{{ section.settings.secondary_button_url }}" class="btn btn--secondary">
+              {{ section.settings.secondary_button_text }}
+            </a>
+          {% endif %}
+        </div>
+
+        {% if section.settings.caption != blank %}
+          <div class="home-hero__caption small text-muted">
+            {{ section.settings.caption }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="home-hero__media">
+        {% if section.settings.image != blank %}
+          <img
+            src="{{ section.settings.image | image_url: width: 1200 }}"
+            srcset="
+              {{ section.settings.image | image_url: width: 600 }} 600w,
+              {{ section.settings.image | image_url: width: 900 }} 900w,
+              {{ section.settings.image | image_url: width: 1200 }} 1200w,
+              {{ section.settings.image | image_url: width: 1500 }} 1500w
+            "
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            alt="{{ section.settings.image_alt | default: section.settings.heading | escape }}"
+            loading="eager"
+            class="home-hero__image"
+            width="1200"
+            height="900"
+          >
+        {% else %}
+          {{ 'lifestyle-1' | placeholder_svg_tag: 'home-hero__placeholder' }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-hero {
+    padding: var(--spacing-4xl) 0 var(--spacing-3xl);
+    background-color: var(--color-white);
+  }
+
+  .home-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2xl);
+    align-items: center;
+  }
+
+  .home-hero__heading {
+    margin-bottom: var(--spacing-md);
+    max-width: 18ch;
+  }
+
+  .home-hero__subheading {
+    max-width: 50ch;
+  }
+
+  .home-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+  }
+
+  .home-hero__caption {
+    margin-top: var(--spacing-lg);
+  }
+
+  .home-hero__media {
+    position: relative;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-off-white);
+  }
+
+  .home-hero__image,
+  .home-hero__placeholder {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  @media (min-width: 1024px) {
+    .home-hero__grid {
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--spacing-3xl);
+    }
+
+    .home-hero {
+      padding: var(--spacing-4xl) 0;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Home Hero",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "Everform Architectural Metalwork"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Corten steel and architectural metalwork built to precise UK specifications."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Planters, copings, and bespoke fabrications delivered with engineering rigor, fast lead times, and transparent pricing."
+    },
+    {
+      "type": "text",
+      "id": "primary_button_text",
+      "label": "Primary Button Text",
+      "default": "View Products"
+    },
+    {
+      "type": "url",
+      "id": "primary_button_url",
+      "label": "Primary Button URL",
+      "default": "/collections/all"
+    },
+    {
+      "type": "text",
+      "id": "secondary_button_text",
+      "label": "Secondary Button Text",
+      "default": "Request a Quote"
+    },
+    {
+      "type": "url",
+      "id": "secondary_button_url",
+      "label": "Secondary Button URL",
+      "default": "/pages/quotation-form"
+    },
+    {
+      "type": "textarea",
+      "id": "caption",
+      "label": "Caption",
+      "default": "Trusted by contractors, architects, and landscape designers across the UK."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Hero Image"
+    },
+    {
+      "type": "text",
+      "id": "image_alt",
+      "label": "Hero Image Alt Text",
+      "default": "Corten steel planters installed in a commercial landscape"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home Hero"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,50 @@
+{% comment %}
+  Main Search
+{% endcomment %}
+
+<section class="main-search section">
+  <div class="container">
+    <h1>Search</h1>
+
+    <form action="{{ routes.search_url }}" method="get" role="search" class="main-search__form">
+      <input type="search" name="q" value="{{ search.terms | escape }}" class="form-input" placeholder="Search products">
+      <button type="submit" class="btn btn--primary">Search</button>
+    </form>
+
+    {% if search.performed %}
+      {% if search.results_count > 0 %}
+        <div class="product-grid">
+          {% for item in search.results %}
+            {% if item.object_type == 'product' %}
+              {% render 'product-card', product: item %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% else %}
+        <p class="text-secondary">No results found for "{{ search.terms }}".</p>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  .main-search__form {
+    display: grid;
+    gap: var(--spacing-md);
+    margin: var(--spacing-lg) 0 var(--spacing-2xl);
+  }
+
+  @media (min-width: 768px) {
+    .main-search__form {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Main Search",
+  "settings": []
+}
+{% endschema %}

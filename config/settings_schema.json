@@ -215,6 +215,23 @@
     ]
   },
   {
+    "name": "SEO",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "social_share_image",
+        "label": "Default Social Share Image",
+        "info": "Used for Open Graph/Twitter when a page image is not available"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter",
+        "label": "Twitter/X Handle",
+        "default": ""
+      }
+    ]
+  },
+  {
     "name": "Cart",
     "settings": [
       {

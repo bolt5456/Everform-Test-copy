@@ -1,0 +1,170 @@
+{% comment %}
+  Homepage Value Props
+{% endcomment %}
+
+<section class="home-value-props section">
+  <div class="container">
+    {% if section.settings.heading != blank %}
+      <div class="home-value-props__header">
+        <h2>{{ section.settings.heading }}</h2>
+        {% if section.settings.subheading != blank %}
+          <p class="text-secondary">{{ section.settings.subheading }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="home-value-props__grid">
+      {% for block in section.blocks %}
+        <div class="home-value-props__card" {{ block.shopify_attributes }}>
+          <div class="home-value-props__icon">
+            {% if block.settings.icon == 'precision' %}
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="14" cy="14" r="10"></circle>
+                <path d="M14 4v4M14 20v4M4 14h4M20 14h4"></path>
+              </svg>
+            {% elsif block.settings.icon == 'delivery' %}
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="7" width="14" height="10"></rect>
+                <path d="M17 10h4l4 4v3h-4"></path>
+                <circle cx="8" cy="20" r="2"></circle>
+                <circle cx="21" cy="20" r="2"></circle>
+              </svg>
+            {% else %}
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l8-5 8 5v10l-8 5-8-5z"></path>
+                <path d="M14 4v20"></path>
+              </svg>
+            {% endif %}
+          </div>
+          <h3 class="home-value-props__title">{{ block.settings.title }}</h3>
+          {% if block.settings.text != blank %}
+            <p class="small text-secondary">{{ block.settings.text }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-value-props__header {
+    max-width: 60ch;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .home-value-props__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+
+  .home-value-props__card {
+    border: 1px solid var(--color-border);
+    padding: var(--spacing-xl);
+    background-color: var(--color-white);
+  }
+
+  .home-value-props__icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 52px;
+    height: 52px;
+    border: 1px solid var(--color-border);
+    margin-bottom: var(--spacing-md);
+    color: var(--color-primary);
+  }
+
+  .home-value-props__title {
+    font-size: var(--font-size-h4-mobile);
+    margin-bottom: var(--spacing-sm);
+  }
+
+  @media (min-width: 768px) {
+    .home-value-props__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Home Value Props",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Built for commercial reliability"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Manufacturing control, responsive engineering support, and clear pricing for every project."
+    }
+  ],
+  "blocks": [
+    {
+      "type": "value",
+      "name": "Value Prop",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "default": "precision",
+          "options": [
+            { "value": "precision", "label": "Precision" },
+            { "value": "delivery", "label": "Delivery" },
+            { "value": "material", "label": "Material" }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Precision fabrication"
+        },
+        {
+          "type": "textarea",
+          "id": "text",
+          "label": "Text",
+          "default": "UK manufacturing with tight tolerances and consistent finish."
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Home Value Props",
+      "blocks": [
+        {
+          "type": "value",
+          "settings": {
+            "icon": "precision",
+            "title": "Precision fabrication",
+            "text": "UK manufacturing with tight tolerances and consistent finish."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "icon": "delivery",
+            "title": "Reliable lead times",
+            "text": "Clear production windows with proactive updates."
+          }
+        },
+        {
+          "type": "value",
+          "settings": {
+            "icon": "material",
+            "title": "Material expertise",
+            "text": "Corten and aluminium options engineered for longevity."
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

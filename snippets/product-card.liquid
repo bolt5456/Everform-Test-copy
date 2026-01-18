@@ -33,7 +33,7 @@
             {{ product.featured_media | image_url: width: 900 }} 900w
           "
           sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-          alt="{{ product.featured_media.alt | escape }}"
+          alt="{{ product.featured_media.alt | default: product.title | escape }}"
           width="600"
           height="{% if image_ratio_param == '4-5' %}750{% elsif image_ratio_param == '1-1' %}600{% else %}450{% endif %}"
           {% if lazy_load_param %}loading="lazy"{% else %}loading="eager"{% endif %}
