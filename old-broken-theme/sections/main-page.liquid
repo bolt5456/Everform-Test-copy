@@ -1,0 +1,74 @@
+{% comment %}
+  Main Page Section
+  For About, Contact, Services pages
+{% endcomment %}
+
+<div class="main-page">
+  <div class="container{% if section.settings.narrow_container %} container--narrow{% endif %}">
+    {% if section.settings.show_breadcrumbs %}
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <div class="breadcrumbs__item">
+          <a href="{{ routes.root_url }}" class="breadcrumbs__link">Home</a>
+          <span class="breadcrumbs__separator">/</span>
+        </div>
+        <div class="breadcrumbs__item">
+          <span class="breadcrumbs__current">{{ page.title }}</span>
+        </div>
+      </nav>
+    {% endif %}
+
+    <div class="page-content">
+      {% if section.settings.show_title %}
+        <h1 class="page-title">{{ page.title }}</h1>
+      {% endif %}
+
+      <div class="page-body rte">
+        {{ page.content }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .main-page {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .page-content {
+    padding-top: var(--spacing-lg);
+  }
+
+  .page-title {
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .page-body {
+    max-width: 100%;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show Breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show Page Title",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "narrow_container",
+      "label": "Use Narrow Container",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

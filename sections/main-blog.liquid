@@ -1,246 +1,142 @@
-{% comment %}
-  Main Blog Section
-  Blog post listing with pagination
-{% endcomment %}
+{{ 'component-article-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'section-main-blog.css' | asset_url | stylesheet_tag }}
 
-{% paginate blog.articles by section.settings.posts_per_page %}
-  <div class="main-blog">
-    <div class="container">
-      {% if section.settings.show_breadcrumbs %}
-        <nav class="breadcrumbs" aria-label="Breadcrumb">
-          <div class="breadcrumbs__item">
-            <a href="{{ routes.root_url }}" class="breadcrumbs__link">Home</a>
-            <span class="breadcrumbs__separator">/</span>
-          </div>
-          <div class="breadcrumbs__item">
-            <span class="breadcrumbs__current">{{ blog.title }}</span>
-          </div>
-        </nav>
-      {% endif %}
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
 
-      <div class="blog-header text-center">
-        <h1 class="blog-header__title">{{ blog.title }}</h1>
-      </div>
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
 
-      {% if blog.articles.size > 0 %}
-        <div class="blog-grid">
-          {% for article in blog.articles %}
-            <article class="blog-card">
-              <a href="{{ article.url }}" class="blog-card__link">
-                {% if article.image %}
-                  <div class="blog-card__image-wrapper aspect-ratio aspect-ratio--4-3">
-                    <img
-                      src="{{ article.image | image_url: width: 600 }}"
-                      srcset="
-                        {{ article.image | image_url: width: 400 }} 400w,
-                        {{ article.image | image_url: width: 600 }} 600w,
-                        {{ article.image | image_url: width: 800 }} 800w
-                      "
-                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                      alt="{{ article.image.alt | escape }}"
-                      loading="{% if forloop.index <= 3 %}eager{% else %}lazy{% endif %}"
-                      class="blog-card__image"
-                    >
-                  </div>
-                {% endif %}
+{%- paginate blog.articles by 6 -%}
+  <div class="main-blog page-width section-{{ section.id }}-padding">
+    <h1 class="title--primary{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
+      {{ blog.title | escape }}
+    </h1>
 
-                <div class="blog-card__content">
-                  <time class="blog-card__date small text-muted" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
-                    {{ article.published_at | date: '%B %d, %Y' }}
-                  </time>
-
-                  <h2 class="blog-card__title">{{ article.title }}</h2>
-
-                  {% if article.excerpt != blank %}
-                    <div class="blog-card__excerpt">
-                      {{ article.excerpt | strip_html | truncatewords: 30 }}
-                    </div>
-                  {% endif %}
-
-                  <div class="blog-card__link-text">
-                    Read More →
-                  </div>
-                </div>
-              </a>
-            </article>
-          {% endfor %}
+    <div class="blog-articles {% if section.settings.layout == 'collage' %}blog-articles--collage{% endif %}">
+      {%- for article in blog.articles -%}
+        <div
+          class="blog-articles__article article{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}"
+          {% if settings.animations_reveal_on_scroll %}
+            data-cascade
+            style="--animation-order: {{ forloop.index }};"
+          {% endif %}
+        >
+          {%- render 'article-card',
+            article: article,
+            media_height: section.settings.image_height,
+            media_aspect_ratio: article.image.aspect_ratio,
+            show_image: section.settings.show_image,
+            show_date: section.settings.show_date,
+            show_author: section.settings.show_author,
+            show_excerpt: true
+          -%}
         </div>
-
-        {% if paginate.pages > 1 %}
-          <nav class="pagination" aria-label="Pagination">
-            {% if paginate.previous %}
-              <a href="{{ paginate.previous.url }}" class="pagination__item">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                  <path d="M8 2L4 6l4 4"/>
-                </svg>
-              </a>
-            {% else %}
-              <span class="pagination__item pagination__item--disabled">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                  <path d="M8 2L4 6l4 4"/>
-                </svg>
-              </span>
-            {% endif %}
-
-            {% for part in paginate.parts %}
-              {% if part.is_link %}
-                <a href="{{ part.url }}" class="pagination__item">{{ part.title }}</a>
-              {% else %}
-                {% if part.title == paginate.current_page %}
-                  <span class="pagination__item pagination__item--active">{{ part.title }}</span>
-                {% else %}
-                  <span class="pagination__item">{{ part.title }}</span>
-                {% endif %}
-              {% endif %}
-            {% endfor %}
-
-            {% if paginate.next %}
-              <a href="{{ paginate.next.url }}" class="pagination__item">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                  <path d="M4 2l4 4-4 4"/>
-                </svg>
-              </a>
-            {% else %}
-              <span class="pagination__item pagination__item--disabled">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
-                  <path d="M4 2l4 4-4 4"/>
-                </svg>
-              </span>
-            {% endif %}
-          </nav>
-        {% endif %}
-      {% else %}
-        <div class="blog-empty text-center">
-          <p class="text-muted">No blog posts yet.</p>
-        </div>
-      {% endif %}
+      {%- endfor -%}
     </div>
+
+    {%- if paginate.pages > 1 -%}
+      {%- render 'pagination', paginate: paginate -%}
+    {%- endif -%}
   </div>
-{% endpaginate %}
-
-<style>
-  .main-blog {
-    padding: var(--spacing-2xl) 0;
-  }
-
-  .blog-header {
-    margin-bottom: var(--spacing-2xl);
-  }
-
-  .blog-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--spacing-2xl);
-    margin-bottom: var(--spacing-2xl);
-  }
-
-  @media (min-width: 768px) {
-    .blog-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: var(--spacing-2xl);
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .blog-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  .blog-card {
-    background-color: var(--color-white);
-    border: 1px solid var(--color-border);
-    transition: box-shadow var(--transition-base);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .blog-card:hover {
-    box-shadow: var(--shadow-md);
-  }
-
-  .blog-card__link {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .blog-card__image-wrapper {
-    overflow: hidden;
-  }
-
-  .blog-card__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform var(--transition-slow);
-  }
-
-  .blog-card:hover .blog-card__image {
-    transform: scale(1.05);
-  }
-
-  .blog-card__content {
-    padding: var(--spacing-lg);
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .blog-card__date {
-    display: block;
-    margin-bottom: var(--spacing-sm);
-  }
-
-  .blog-card__title {
-    font-size: var(--font-size-h4-mobile);
-    margin-bottom: var(--spacing-sm);
-    color: var(--color-black);
-    transition: color var(--transition-base);
-  }
-
-  .blog-card:hover .blog-card__title {
-    color: var(--color-primary);
-  }
-
-  .blog-card__excerpt {
-    color: var(--color-charcoal);
-    line-height: var(--line-height-body);
-    margin-bottom: var(--spacing-md);
-    flex: 1;
-  }
-
-  .blog-card__link-text {
-    color: var(--color-primary);
-    font-weight: var(--font-weight-medium);
-  }
-
-  .blog-empty {
-    padding: var(--spacing-4xl) 0;
-  }
-</style>
+{%- endpaginate -%}
 
 {% schema %}
 {
-  "name": "Blog",
+  "name": "t:sections.main-blog.name",
+  "tag": "section",
+  "class": "section",
   "settings": [
     {
+      "type": "select",
+      "id": "layout",
+      "options": [
+        {
+          "value": "grid",
+          "label": "t:sections.main-blog.settings.layout.options__1.label"
+        },
+        {
+          "value": "collage",
+          "label": "t:sections.main-blog.settings.layout.options__2.label"
+        }
+      ],
+      "default": "collage",
+      "label": "t:sections.main-blog.settings.layout.label"
+    },
+    {
       "type": "checkbox",
-      "id": "show_breadcrumbs",
-      "label": "Show Breadcrumbs",
-      "default": true
+      "id": "show_image",
+      "default": true,
+      "label": "t:sections.main-blog.settings.show_image.label"
+    },
+    {
+      "type": "select",
+      "id": "image_height",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "t:sections.main-blog.settings.image_height.options__1.label"
+        },
+        {
+          "value": "small",
+          "label": "t:sections.main-blog.settings.image_height.options__2.label"
+        },
+        {
+          "value": "medium",
+          "label": "t:sections.main-blog.settings.image_height.options__3.label"
+        },
+        {
+          "value": "large",
+          "label": "t:sections.main-blog.settings.image_height.options__4.label"
+        }
+      ],
+      "default": "medium",
+      "label": "t:sections.main-blog.settings.image_height.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "default": true,
+      "label": "t:sections.main-blog.settings.show_date.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "default": false,
+      "label": "t:sections.main-blog.settings.show_author.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.padding.section_padding_heading"
     },
     {
       "type": "range",
-      "id": "posts_per_page",
-      "label": "Posts Per Page",
-      "min": 6,
-      "max": 24,
-      "step": 3,
-      "default": 9
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_top",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.all.padding.padding_bottom",
+      "default": 36
     }
   ]
 }

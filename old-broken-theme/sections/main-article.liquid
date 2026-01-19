@@ -1,0 +1,183 @@
+{% comment %}
+  Main Article Section
+  Individual blog post
+{% endcomment %}
+
+<div class="main-article">
+  <div class="container container--narrow">
+    {% if section.settings.show_breadcrumbs %}
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <div class="breadcrumbs__item">
+          <a href="{{ routes.root_url }}" class="breadcrumbs__link">Home</a>
+          <span class="breadcrumbs__separator">/</span>
+        </div>
+        <div class="breadcrumbs__item">
+          <a href="{{ blog.url }}" class="breadcrumbs__link">{{ blog.title }}</a>
+          <span class="breadcrumbs__separator">/</span>
+        </div>
+        <div class="breadcrumbs__item">
+          <span class="breadcrumbs__current">{{ article.title }}</span>
+        </div>
+      </nav>
+    {% endif %}
+
+    <article class="article">
+      <header class="article-header">
+        <time class="article-header__date small text-muted" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+          {{ article.published_at | date: '%B %d, %Y' }}
+        </time>
+
+        <h1 class="article-header__title">{{ article.title }}</h1>
+
+        {% if section.settings.show_author and article.author != blank %}
+          <p class="article-header__author small text-muted">
+            By {{ article.author }}
+          </p>
+        {% endif %}
+      </header>
+
+      {% if article.image and section.settings.show_image %}
+        <div class="article-image">
+          <img
+            src="{{ article.image | image_url: width: 1200 }}"
+            srcset="
+              {{ article.image | image_url: width: 600 }} 600w,
+              {{ article.image | image_url: width: 900 }} 900w,
+              {{ article.image | image_url: width: 1200 }} 1200w
+            "
+            sizes="(min-width: 1024px) 800px, 100vw"
+            alt="{{ article.image.alt | escape }}"
+            loading="eager"
+            class="article-image__img"
+          >
+        </div>
+      {% endif %}
+
+      <div class="article-content rte">
+        {{ article.content }}
+      </div>
+
+      {% if article.tags.size > 0 and section.settings.show_tags %}
+        <div class="article-tags">
+          <span class="article-tags__label small text-muted">Tags:</span>
+          <div class="article-tags__list">
+            {% for tag in article.tags %}
+              <a href="{{ blog.url }}/tagged/{{ tag | handle }}" class="article-tag">
+                {{ tag }}
+              </a>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="article-footer">
+        <a href="{{ blog.url }}" class="btn btn--secondary">
+          ← Back to {{ blog.title }}
+        </a>
+      </div>
+    </article>
+  </div>
+</div>
+
+<style>
+  .main-article {
+    padding: var(--spacing-2xl) 0;
+  }
+
+  .article-header {
+    text-align: center;
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .article-header__date {
+    display: block;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .article-header__title {
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .article-image {
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .article-image__img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+  }
+
+  .article-content {
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .article-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-lg) 0;
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: var(--spacing-2xl);
+  }
+
+  .article-tags__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .article-tag {
+    display: inline-block;
+    padding: 4px var(--spacing-sm);
+    background-color: var(--color-off-white);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-small);
+    text-decoration: none;
+    color: var(--color-charcoal);
+    transition: background-color var(--transition-base);
+  }
+
+  .article-tag:hover {
+    background-color: var(--color-light-gray);
+    text-decoration: none;
+  }
+
+  .article-footer {
+    padding-top: var(--spacing-lg);
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Article",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show Breadcrumbs",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "label": "Show Featured Image",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_author",
+      "label": "Show Author",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tags",
+      "label": "Show Tags",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

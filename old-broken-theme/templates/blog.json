@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-blog",
+      "settings": {
+        "show_breadcrumbs": true,
+        "posts_per_page": 9
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
