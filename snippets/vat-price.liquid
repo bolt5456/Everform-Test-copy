@@ -1,0 +1,68 @@
+{% comment %}
+  Renders UK VAT pricing (Ex VAT + Inc VAT)
+
+  Accepts:
+  - price: {Number} Price in cents
+  - vat_rate: {Number} VAT rate percentage (default 20)
+
+  Usage:
+  {% render 'vat-price', price: product.price %}
+{% endcomment %}
+
+{%- liquid
+  assign vat_rate = vat_rate | default: 20
+  assign vat_multiplier = vat_rate | divided_by: 100.0 | plus: 1
+  assign price_with_vat = price | times: vat_multiplier | round
+  assign money_price_ex_vat = price | money
+  assign money_price_inc_vat = price_with_vat | money
+
+  if settings.currency_code_enabled
+    assign money_price_ex_vat = price | money_with_currency
+    assign money_price_inc_vat = price_with_vat | money_with_currency
+  endif
+-%}
+
+<div class="vat-pricing">
+  <div class="vat-pricing__ex-vat">
+    <span class="vat-pricing__amount">{{ money_price_ex_vat }}</span>
+    <span class="vat-pricing__label">Ex VAT</span>
+  </div>
+  <div class="vat-pricing__inc-vat">
+    <span class="vat-pricing__amount">{{ money_price_inc_vat }}</span>
+    <span class="vat-pricing__label">Inc VAT</span>
+  </div>
+</div>
+
+<style>
+.vat-pricing {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.vat-pricing__ex-vat {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.vat-pricing__inc-vat {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  color: #666;
+}
+
+.vat-pricing__amount {
+  font-weight: 600;
+}
+
+.vat-pricing__label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.7;
+}
+</style>
