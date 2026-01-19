@@ -1,0 +1,576 @@
+/*
+ * Everform Component Library
+ * Reusable UI components with premium interactions
+ */
+
+/* ========================================
+   BUTTONS - Primary, Secondary, Tertiary
+   ======================================== */
+
+/* Button base styles - enhance Dawn's buttons */
+.button,
+button[type="submit"],
+input[type="submit"],
+.shopify-payment-button__button,
+.product-form__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem var(--button-padding-x);
+  font-size: 1rem;
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--border-radius-base);
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  min-height: var(--button-height-base);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Primary button - Teal */
+.button--primary,
+button[type="submit"]:not(.button--secondary):not(.button--tertiary),
+input[type="submit"]:not(.button--secondary):not(.button--tertiary),
+.product-form__submit {
+  background-color: var(--color-teal);
+  color: var(--color-white);
+  box-shadow: var(--shadow-teal-sm);
+}
+
+.button--primary:hover,
+button[type="submit"]:not(.button--secondary):not(.button--tertiary):hover,
+input[type="submit"]:not(.button--secondary):not(.button--tertiary):hover,
+.product-form__submit:hover {
+  background-color: var(--color-teal-dark);
+  color: var(--color-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-teal-md);
+}
+
+.button--primary:active {
+  transform: translateY(0);
+}
+
+/* Secondary button - Outline */
+.button--secondary {
+  background-color: transparent;
+  color: var(--color-teal);
+  border: var(--border-width-medium) solid var(--color-teal);
+  box-shadow: none;
+}
+
+.button--secondary:hover {
+  background-color: var(--color-teal);
+  color: var(--color-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-teal-sm);
+}
+
+/* Tertiary button - Text only */
+.button--tertiary {
+  background-color: transparent;
+  color: var(--color-teal);
+  box-shadow: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.button--tertiary:hover {
+  color: var(--color-teal-dark);
+  text-decoration: underline;
+  transform: none;
+}
+
+/* Large button variant */
+.button--large {
+  min-height: var(--button-height-large);
+  padding: 1.25rem var(--button-padding-x-large);
+  font-size: 1.125rem;
+}
+
+/* Full width button */
+.button--full-width {
+  width: 100%;
+}
+
+/* Button with icon */
+.button__icon {
+  display: inline-flex;
+  margin-right: 0.5rem;
+}
+
+.button__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Disabled state */
+.button:disabled,
+.button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ========================================
+   CARDS
+   ======================================== */
+
+/* Card base */
+.card {
+  background-color: var(--color-white);
+  border: var(--border-width-thin) solid var(--color-light-gray);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-smooth);
+  box-shadow: var(--shadow-base);
+}
+
+/* Card hover effect - lift */
+.card--hoverable:hover,
+.card-wrapper:hover .card {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Card with image */
+.card__media {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-off-white);
+}
+
+/* Image zoom on hover */
+.card--hoverable:hover .card__media img,
+.card-wrapper:hover .card__media img {
+  transform: scale(1.05);
+}
+
+.card__media img {
+  transition: transform var(--transition-smooth);
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Card content */
+.card__content {
+  padding: 1.5rem;
+}
+
+.card__content--large {
+  padding: 2rem;
+}
+
+/* Card title */
+.card__heading {
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 0.5rem;
+  color: var(--color-near-black);
+}
+
+/* Card description */
+.card__text {
+  color: var(--color-cool-gray);
+  margin-bottom: 1rem;
+}
+
+/* Card badge/label */
+.card__badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: var(--color-teal);
+  color: var(--color-white);
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--border-radius-base);
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  z-index: 10;
+}
+
+/* ========================================
+   PRODUCT CARDS (Enhance Dawn's)
+   ======================================== */
+
+.card-wrapper .card {
+  border: var(--border-width-thin) solid var(--color-light-gray);
+  box-shadow: var(--shadow-base);
+}
+
+.card-wrapper:hover .card {
+  border-color: var(--color-medium-gray);
+}
+
+/* Product card image container */
+.card__inner {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Product info */
+.card-information {
+  padding: 1.25rem;
+}
+
+.card-information__text {
+  margin-bottom: 0.5rem;
+}
+
+/* ========================================
+   FORMS
+   ======================================== */
+
+/* Form field wrapper */
+.field {
+  margin-bottom: 1.5rem;
+}
+
+/* Labels */
+label,
+.field__label {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-dark-gray);
+  margin-bottom: 0.5rem;
+}
+
+/* Input fields */
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="search"],
+input[type="password"],
+input[type="url"],
+textarea,
+select,
+.field__input {
+  width: 100%;
+  height: var(--input-height);
+  padding: 0 var(--input-padding-x);
+  font-size: 1rem;
+  font-family: inherit;
+  line-height: 1.5;
+  color: var(--color-dark-gray);
+  background-color: var(--color-white);
+  border: var(--input-border-width) solid var(--input-border-color);
+  border-radius: var(--border-radius-base);
+  transition: all var(--transition-fast);
+  appearance: none;
+}
+
+/* Textarea */
+textarea,
+textarea.field__input {
+  height: auto;
+  min-height: 120px;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  resize: vertical;
+}
+
+/* Focus state */
+input:focus,
+textarea:focus,
+select:focus,
+.field__input:focus {
+  outline: none;
+  border-color: var(--input-border-color-focus);
+  box-shadow: var(--shadow-focus-teal);
+}
+
+/* Error state */
+input.error,
+textarea.error,
+select.error,
+.field--error input,
+.field--error textarea,
+.field--error select {
+  border-color: #dc3545;
+}
+
+/* Field error message */
+.field__message {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #dc3545;
+}
+
+/* Select dropdown */
+select,
+select.field__input {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23495057' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px;
+  padding-right: 3rem;
+}
+
+/* Checkbox and radio */
+input[type="checkbox"],
+input[type="radio"] {
+  width: auto;
+  height: auto;
+  margin-right: 0.5rem;
+}
+
+/* ========================================
+   COLUMN CARDS (for multicolumn sections)
+   ======================================== */
+
+.multicolumn-card {
+  background-color: transparent;
+  border: var(--border-width-thin) solid var(--color-white-alpha-15);
+  border-radius: var(--border-radius-lg);
+  padding: 2rem;
+  text-align: center;
+  transition: all var(--transition-smooth);
+}
+
+.multicolumn-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-white-alpha-20);
+  background-color: var(--color-white-alpha-10);
+}
+
+.multicolumn-card__image-wrapper {
+  margin-bottom: 1.5rem;
+}
+
+.multicolumn-card__image-wrapper svg,
+.multicolumn-card__image-wrapper img {
+  width: 48px;
+  height: 48px;
+  margin: 0 auto;
+}
+
+/* Icon with background circle */
+.icon-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--color-white-alpha-20);
+  margin-bottom: 1rem;
+}
+
+.icon-circle svg {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+/* ========================================
+   MEDIA WITH TEXT
+   ======================================== */
+
+.image-with-text__media {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.image-with-text__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Stat overlay on images */
+.media-stat-overlay {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  background-color: var(--color-teal);
+  color: var(--color-white);
+  padding: 1.5rem 2rem;
+  border-radius: var(--border-radius-base);
+  box-shadow: var(--shadow-lg);
+}
+
+.media-stat-overlay__number {
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  margin-bottom: 0.25rem;
+}
+
+.media-stat-overlay__label {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  opacity: 0.9;
+}
+
+/* ========================================
+   FOOTER ENHANCEMENTS
+   ======================================== */
+
+/* Footer link with arrow effect */
+.footer__link {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-medium-gray);
+  transition: all var(--transition-fast);
+}
+
+.footer__link:hover {
+  color: var(--color-white);
+  transform: translateX(4px);
+}
+
+.footer__link::after {
+  content: '→';
+  margin-left: 0.25rem;
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.footer__link:hover::after {
+  opacity: 1;
+}
+
+/* Social icons */
+.social-icons {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-full);
+  background-color: var(--color-teal);
+  color: var(--color-white);
+  transition: all var(--transition-smooth);
+}
+
+.social-icon:hover {
+  background-color: var(--color-teal-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.social-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+/* ========================================
+   NAVIGATION ENHANCEMENTS
+   ======================================== */
+
+/* Header navigation links */
+.header__menu-item {
+  position: relative;
+}
+
+.header__menu-item .header__active-menu-item::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-teal);
+}
+
+/* ========================================
+   BADGES & PILLS
+   ======================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.875rem;
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--border-radius-full);
+  white-space: nowrap;
+}
+
+.badge--teal {
+  background-color: var(--color-teal-alpha-10);
+  color: var(--color-teal);
+}
+
+.badge--gray {
+  background-color: var(--color-light-gray);
+  color: var(--color-cool-gray);
+}
+
+.badge--gold {
+  background-color: rgba(212, 175, 55, 0.1);
+  color: var(--color-gold);
+}
+
+/* ========================================
+   DIVIDERS
+   ======================================== */
+
+.divider {
+  height: 1px;
+  background-color: var(--color-light-gray);
+  border: none;
+  margin: 2rem 0;
+}
+
+.divider--thick {
+  height: 3px;
+  background-color: var(--color-teal);
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media screen and (max-width: 768px) {
+  .button {
+    min-height: var(--button-height-base);
+    padding: 0.875rem 1.5rem;
+  }
+
+  .button--large {
+    min-height: 52px;
+    padding: 1rem 2rem;
+  }
+
+  .card__content {
+    padding: 1.25rem;
+  }
+
+  .card__content--large {
+    padding: 1.5rem;
+  }
+
+  .multicolumn-card {
+    padding: 1.5rem;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="number"],
+  input[type="search"],
+  input[type="password"],
+  input[type="url"],
+  select,
+  .field__input {
+    height: 52px;
+  }
+}

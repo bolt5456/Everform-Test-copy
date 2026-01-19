@@ -1,0 +1,203 @@
+/*
+ * Everform Design System Variables
+ * Foundation for premium industrial B2B aesthetic
+ * Uses CSS Custom Properties for design tokens
+ */
+
+:root {
+  /* ========================================
+     COLOR PALETTE
+     ======================================== */
+
+  /* Primary - Everform Teal */
+  --color-teal: #183E3F;
+  --color-teal-dark: #0F2627;
+  --color-teal-light: #224D4F;
+  --color-teal-alpha-10: rgba(24, 62, 63, 0.1);
+  --color-teal-alpha-20: rgba(24, 62, 63, 0.2);
+  --color-teal-alpha-30: rgba(24, 62, 63, 0.3);
+
+  /* Industrial Grays */
+  --color-white: #FFFFFF;
+  --color-off-white: #F8F9FA;
+  --color-light-gray: #E9ECEF;
+  --color-medium-gray: #CED4DA;
+  --color-cool-gray: #6C757D;
+  --color-dark-gray: #495057;
+  --color-near-black: #212529;
+
+  /* Accents */
+  --color-steel-gray: #8B9A9C;
+  --color-gold: #D4AF37;
+
+  /* White with opacity (for overlays) */
+  --color-white-alpha-10: rgba(255, 255, 255, 0.1);
+  --color-white-alpha-15: rgba(255, 255, 255, 0.15);
+  --color-white-alpha-20: rgba(255, 255, 255, 0.2);
+  --color-white-alpha-90: rgba(255, 255, 255, 0.9);
+
+  /* ========================================
+     TYPOGRAPHY SCALE
+     ======================================== */
+
+  /* Font Sizes - Base */
+  --font-size-base: 16px;
+  --font-size-large: 18px;
+  --font-size-xl: 20px;
+  --font-size-2xl: 22px;
+
+  /* Font Sizes - Headings (Mobile → Desktop with clamp) */
+  --font-size-h1: clamp(36px, 4vw + 1rem, 64px);
+  --font-size-h2: clamp(28px, 3vw + 1rem, 48px);
+  --font-size-h3: clamp(24px, 2.5vw + 0.5rem, 32px);
+  --font-size-h4: clamp(20px, 2vw + 0.5rem, 28px);
+  --font-size-h5: clamp(18px, 1.5vw + 0.5rem, 24px);
+  --font-size-h6: clamp(16px, 1vw + 0.5rem, 20px);
+
+  /* Line Heights */
+  --line-height-tight: 1.1;
+  --line-height-snug: 1.2;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
+  --line-height-loose: 1.8;
+
+  /* Letter Spacing */
+  --letter-spacing-tight: -0.02em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.05em;
+  --letter-spacing-wider: 0.08em;
+
+  /* Font Weights */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ========================================
+     SPACING SYSTEM (8px base unit)
+     ======================================== */
+
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
+  --space-xl: 48px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+  --space-4xl: 128px;
+  --space-5xl: 160px;
+
+  /* Section Padding - Progressive (Mobile → Desktop) */
+  --section-padding-mobile: var(--space-2xl);
+  --section-padding-tablet: var(--space-3xl);
+  --section-padding-desktop: var(--space-4xl);
+  --section-padding-large: var(--space-5xl);
+
+  /* Container Padding */
+  --container-padding-mobile: var(--space-sm);
+  --container-padding-tablet: var(--space-md);
+  --container-padding-desktop: var(--space-lg);
+
+  /* ========================================
+     SHADOWS
+     ======================================== */
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.15);
+
+  /* Teal shadows for buttons */
+  --shadow-teal-sm: 0 2px 8px var(--color-teal-alpha-20);
+  --shadow-teal-md: 0 4px 16px var(--color-teal-alpha-30);
+
+  /* Focus glow */
+  --shadow-focus-teal: 0 0 0 3px var(--color-teal-alpha-20);
+
+  /* ========================================
+     TRANSITIONS
+     ======================================== */
+
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+
+  /* Cubic bezier for smooth interactions */
+  --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ========================================
+     BORDERS
+     ======================================== */
+
+  --border-width-thin: 1px;
+  --border-width-medium: 2px;
+  --border-width-thick: 3px;
+  --border-width-accent: 4px;
+
+  --border-radius-sm: 4px;
+  --border-radius-base: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-full: 9999px;
+
+  /* ========================================
+     BUTTON SIZES
+     ======================================== */
+
+  --button-height-base: 48px;
+  --button-height-large: 56px;
+  --button-padding-x: 2rem;
+  --button-padding-x-large: 2.5rem;
+
+  /* ========================================
+     FORM ELEMENTS
+     ======================================== */
+
+  --input-height: 56px;
+  --input-padding-x: 1.25rem;
+  --input-border-width: var(--border-width-medium);
+  --input-border-color: var(--color-light-gray);
+  --input-border-color-focus: var(--color-teal);
+
+  /* ========================================
+     Z-INDEX SCALE
+     ======================================== */
+
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+
+  /* ========================================
+     BREAKPOINTS (for reference in media queries)
+     ======================================== */
+
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 990px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1440px;
+
+  /* ========================================
+     HERO BANNER SPECIFIC
+     ======================================== */
+
+  --hero-height-mobile: 500px;
+  --hero-height-tablet: 600px;
+  --hero-height-desktop: 700px;
+  --hero-overlay-opacity: 0.45;
+
+  /* ========================================
+     GRID & LAYOUT
+     ======================================== */
+
+  --grid-gap: var(--space-lg);
+  --grid-gap-sm: var(--space-md);
+
+  --max-width-content: 800px;
+  --max-width-form: 600px;
+  --max-width-container: 1400px;
+}
