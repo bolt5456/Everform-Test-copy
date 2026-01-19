@@ -1,0 +1,552 @@
+/*
+ * EVERFORM MODERN DESIGN OVERHAUL
+ * This file contains critical visual improvements
+ * Load this AFTER other CSS files for maximum impact
+ */
+
+/* ===================================
+   SECTION SPACING - Make it breathe!
+   =================================== */
+
+.section {
+  padding: 5rem 0; /* Much more generous vertical spacing */
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: 7rem 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section {
+    padding: 10rem 0; /* Huge spacing on desktop */
+  }
+}
+
+.section--narrow-spacing {
+  padding: 3rem 0;
+}
+
+@media (min-width: 1024px) {
+  .section--narrow-spacing {
+    padding: 5rem 0;
+  }
+}
+
+/* ===================================
+   TYPOGRAPHY - Bigger & Bolder
+   =================================== */
+
+h1, .h1 {
+  font-size: 2.5rem !important; /* 40px mobile */
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.03em !important;
+  margin-bottom: 1.5rem !important;
+}
+
+@media (min-width: 768px) {
+  h1, .h1 {
+    font-size: 3.5rem !important; /* 56px tablet */
+  }
+}
+
+@media (min-width: 1024px) {
+  h1, .h1 {
+    font-size: 4.5rem !important; /* 72px desktop - HUGE */
+  }
+}
+
+h2, .h2 {
+  font-size: 2rem !important; /* 32px mobile */
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.02em !important;
+  margin-bottom: 1.25rem !important;
+}
+
+@media (min-width: 768px) {
+  h2, .h2 {
+    font-size: 2.75rem !important; /* 44px tablet */
+  }
+}
+
+@media (min-width: 1024px) {
+  h2, .h2 {
+    font-size: 3.5rem !important; /* 56px desktop */
+  }
+}
+
+h3, .h3 {
+  font-size: 1.5rem !important; /* 24px mobile */
+  font-weight: 700 !important;
+  margin-bottom: 1rem !important;
+}
+
+@media (min-width: 1024px) {
+  h3, .h3 {
+    font-size: 2rem !important; /* 32px desktop */
+  }
+}
+
+p {
+  font-size: 1.0625rem !important; /* 17px - slightly larger body text */
+  line-height: 1.7 !important;
+  margin-bottom: 1.25rem !important;
+}
+
+@media (min-width: 1024px) {
+  p {
+    font-size: 1.125rem !important; /* 18px desktop */
+    line-height: 1.8 !important;
+  }
+}
+
+.text-large {
+  font-size: 1.25rem !important;
+  line-height: 1.6 !important;
+}
+
+@media (min-width: 1024px) {
+  .text-large {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* ===================================
+   BUTTONS - Modern & Premium
+   =================================== */
+
+.btn {
+  padding: 1rem 2.5rem !important; /* Bigger buttons */
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  border-radius: 4px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+  letter-spacing: 0.01em !important;
+}
+
+.btn--lg {
+  padding: 1.25rem 3rem !important;
+  font-size: 1.125rem !important;
+}
+
+.btn--primary {
+  background-color: #183E3F !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.btn--primary:hover {
+  background-color: #0F2627 !important;
+  box-shadow: 0 4px 16px rgba(24, 62, 63, 0.3) !important;
+  transform: translateY(-2px) !important;
+}
+
+.btn--primary:active {
+  transform: translateY(0) !important;
+}
+
+.btn--secondary {
+  background-color: transparent !important;
+  color: #183E3F !important;
+  border: 2px solid #183E3F !important;
+  box-shadow: none !important;
+}
+
+.btn--secondary:hover {
+  background-color: #183E3F !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 16px rgba(24, 62, 63, 0.2) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* ===================================
+   HERO SECTION - Make it POP
+   =================================== */
+
+.hero-slideshow__wrapper {
+  min-height: 500px !important;
+}
+
+@media (min-width: 768px) {
+  .hero-slideshow__wrapper {
+    min-height: 600px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-slideshow__wrapper {
+    min-height: 700px !important; /* Taller hero */
+  }
+}
+
+.hero-slide__content {
+  min-height: 500px !important;
+  padding: 4rem 0 !important;
+}
+
+@media (min-width: 768px) {
+  .hero-slide__content {
+    min-height: 600px !important;
+    padding: 5rem 0 !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-slide__content {
+    min-height: 700px !important;
+    padding: 6rem 0 !important;
+  }
+}
+
+.hero-slide__text-wrapper {
+  max-width: 700px !important; /* Wider content area */
+}
+
+.hero-slide__subtitle {
+  font-size: 0.875rem !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.15em !important;
+  color: #FFFFFF !important;
+  margin-bottom: 1.5rem !important;
+  opacity: 0.95 !important;
+}
+
+.hero-slide__heading {
+  font-size: 2.75rem !important;
+  font-weight: 700 !important;
+  color: #FFFFFF !important;
+  margin-bottom: 1.5rem !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.02em !important;
+}
+
+@media (min-width: 768px) {
+  .hero-slide__heading {
+    font-size: 3.75rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero-slide__heading {
+    font-size: 4.5rem !important; /* MASSIVE heading */
+  }
+}
+
+.hero-slide__text {
+  font-size: 1.125rem !important;
+  line-height: 1.6 !important;
+  color: #FFFFFF !important;
+  margin-bottom: 2.5rem !important;
+  opacity: 0.95 !important;
+}
+
+@media (min-width: 1024px) {
+  .hero-slide__text {
+    font-size: 1.25rem !important;
+  }
+}
+
+.hero-slide__buttons {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 1rem !important;
+}
+
+.hero-slide__overlay {
+  background-color: rgba(0, 0, 0, 0.4) !important; /* Darker overlay for better text contrast */
+}
+
+/* ===================================
+   PRODUCT CARDS - Modern Grid
+   =================================== */
+
+.product-card {
+  background: #FFFFFF !important;
+  border: 1px solid #E5E5E5 !important;
+  border-radius: 0 !important;
+  overflow: hidden !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.product-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+  transform: translateY(-4px) !important;
+  border-color: #183E3F !important;
+}
+
+.product-card__image-wrapper {
+  position: relative !important;
+  padding-bottom: 125% !important; /* 4:5 aspect ratio */
+  overflow: hidden !important;
+  background-color: #F5F5F5 !important;
+}
+
+.product-card__image {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transition: transform 0.3s ease !important;
+}
+
+.product-card:hover .product-card__image {
+  transform: scale(1.05) !important;
+}
+
+.product-card__info {
+  padding: 1.5rem !important;
+  flex-grow: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.product-card__title {
+  font-size: 1.125rem !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  margin-bottom: 0.75rem !important;
+  color: #1A1A1A !important;
+}
+
+.product-card__price-wrapper {
+  margin-top: auto !important;
+  padding-top: 1rem !important;
+}
+
+.product-card__price {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #183E3F !important;
+  display: block !important;
+  margin-bottom: 0.25rem !important;
+}
+
+.product-card__price-vat {
+  font-size: 0.875rem !important;
+  color: #666666 !important;
+}
+
+.product-card__button {
+  width: 100% !important;
+  margin-top: 1rem !important;
+}
+
+/* ===================================
+   FEATURED COLLECTION SECTION
+   =================================== */
+
+.featured-collection {
+  background: #FFFFFF !important;
+}
+
+.featured-collection__header {
+  text-align: center !important;
+  margin-bottom: 4rem !important;
+  max-width: 800px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.featured-collection__heading {
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 1.25rem !important;
+  color: #1A1A1A !important;
+}
+
+@media (min-width: 1024px) {
+  .featured-collection__heading {
+    font-size: 3rem !important;
+  }
+}
+
+.featured-collection__description {
+  font-size: 1.125rem !important;
+  line-height: 1.6 !important;
+  color: #666666 !important;
+}
+
+.product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(1, 1fr) !important;
+  gap: 2rem !important;
+}
+
+@media (min-width: 640px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 2.5rem !important;
+  }
+}
+
+/* ===================================
+   CONTACT FORM - Clean & Modern
+   =================================== */
+
+.contact-form {
+  background: #F5F5F5 !important;
+}
+
+.contact-form__container {
+  max-width: 800px !important;
+  margin: 0 auto !important;
+  padding: 4rem 2rem !important;
+}
+
+@media (min-width: 1024px) {
+  .contact-form__container {
+    padding: 5rem 2rem !important;
+  }
+}
+
+.contact-form__heading {
+  font-size: 2.25rem !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  margin-bottom: 1rem !important;
+  color: #1A1A1A !important;
+}
+
+@media (min-width: 1024px) {
+  .contact-form__heading {
+    font-size: 2.75rem !important;
+  }
+}
+
+.contact-form__text {
+  text-align: center !important;
+  font-size: 1.0625rem !important;
+  color: #666666 !important;
+  margin-bottom: 3rem !important;
+}
+
+.form-field {
+  margin-bottom: 1.5rem !important;
+}
+
+.form-label {
+  display: block !important;
+  font-size: 0.9375rem !important;
+  font-weight: 600 !important;
+  color: #333333 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100% !important;
+  padding: 1rem 1.25rem !important;
+  font-size: 1rem !important;
+  border: 2px solid #E5E5E5 !important;
+  border-radius: 4px !important;
+  background: #FFFFFF !important;
+  transition: all 0.2s ease !important;
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none !important;
+  border-color: #183E3F !important;
+  box-shadow: 0 0 0 3px rgba(24, 62, 63, 0.1) !important;
+}
+
+.form-textarea {
+  min-height: 150px !important;
+  resize: vertical !important;
+}
+
+/* ===================================
+   CONTAINER - More spacious
+   =================================== */
+
+.container {
+  max-width: 1440px !important;
+  margin: 0 auto !important;
+  padding-left: 1.5rem !important;
+  padding-right: 1.5rem !important;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: 2.5rem !important;
+    padding-right: 2.5rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
+  }
+}
+
+.container--narrow {
+  max-width: 900px !important;
+}
+
+.container--wide {
+  max-width: 1600px !important;
+}
+
+/* ===================================
+   UTILITY CLASSES
+   =================================== */
+
+.text-center {
+  text-align: center !important;
+}
+
+.mb-0 { margin-bottom: 0 !important; }
+.mb-1 { margin-bottom: 0.5rem !important; }
+.mb-2 { margin-bottom: 1rem !important; }
+.mb-3 { margin-bottom: 1.5rem !important; }
+.mb-4 { margin-bottom: 2rem !important; }
+.mb-5 { margin-bottom: 3rem !important; }
+.mb-6 { margin-bottom: 4rem !important; }
+
+.mt-0 { margin-top: 0 !important; }
+.mt-1 { margin-top: 0.5rem !important; }
+.mt-2 { margin-top: 1rem !important; }
+.mt-3 { margin-top: 1.5rem !important; }
+.mt-4 { margin-top: 2rem !important; }
+.mt-5 { margin-top: 3rem !important; }
+.mt-6 { margin-top: 4rem !important; }
+
+/* ===================================
+   ANIMATIONS - Smooth entrance
+   =================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation: fadeInUp 0.6s ease-out !important;
+}

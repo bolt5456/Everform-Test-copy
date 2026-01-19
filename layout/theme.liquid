@@ -36,6 +36,9 @@
   {{ 'typography.css' | asset_url | stylesheet_tag }}
   {{ 'layout.css' | asset_url | stylesheet_tag }}
   {{ 'components.css' | asset_url | stylesheet_tag }}
+  {{ 'modern-overhaul.css' | asset_url | stylesheet_tag }}
+  {{ 'header-improvements.css' | asset_url | stylesheet_tag }}
+  {{ 'footer-improvements.css' | asset_url | stylesheet_tag }}
 
   {%- comment -%}Fonts{%- endcomment -%}
   <link rel="preload" as="style" href="{{ settings.font_heading | font_url }}" type="text/css" crossorigin>
